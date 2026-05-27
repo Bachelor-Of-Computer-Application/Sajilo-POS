@@ -80,6 +80,11 @@
             <artifactId>jbcrypt</artifactId>
             <version>0.4</version>
         </dependency>
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
+            <version>11.2.0.jre17</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -91,6 +96,9 @@
                 <configuration>
                     <source>17</source>
                     <target>17</target>
+                    <compilerArgs>
+                        <arg>--add-modules=ALL-SYSTEM</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
             <plugin>

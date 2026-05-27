@@ -1,20 +1,64 @@
 package com.possystem.sajilopos.model;
 
 public class User {
-    private int id;
+    private int userId;
+    private String fullName;
     private String username;
-    private String password;
-    private String role; // "admin" or "staff"
+    private String passwordHash;
+    private int roleId;
+    private String roleName;
+    private boolean active;
 
-    public User(int id, String username, String password, String role) {
-        this.id = id;
+    // Constructor with roleId
+    public User(int userId, String fullName, String username, String passwordHash, int roleId, boolean active) {
+        this.userId = userId;
+        this.fullName = fullName;
         this.username = username;
-        this.password = password;
-        this.role = role;
+        this.passwordHash = passwordHash;
+        this.roleId = roleId;
+        this.active = active;
     }
 
-    public int getId() { return id; }
-    public String getUsername() { return username; }
-    public String getPassword() { return password; }
-    public String getRole() { return role; }
+    // Constructor with roleName
+    public User(int userId, String fullName, String username, String passwordHash, String roleName, boolean active) {
+        this.userId = userId;
+        this.fullName = fullName;
+        this.username = username;
+        this.passwordHash = passwordHash;
+        this.roleName = roleName;
+        this.active = active;
+    }
+
+    // Getters and Setters
+    public int getUserId() {
+        return userId;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public int getRoleId() {
+        return roleId;
+    }
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
 }

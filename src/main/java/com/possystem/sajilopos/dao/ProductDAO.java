@@ -1,7 +1,7 @@
 package com.possystem.sajilopos.dao;
 
+import com.possystem.sajilopos.config.DBConnection;
 import com.possystem.sajilopos.model.Product;
-import com.possystem.sajilopos.util.DBConnection;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -14,16 +14,15 @@ public class ProductDAO {
         String sql = "SELECT id, name, price, stock FROM products";
 
         try (Connection conn = DBConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 products.add(new Product(
-                    rs.getInt("id"),
-                    rs.getString("name"),
-                    rs.getDouble("price"),
-                    rs.getInt("stock")
-                ));
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getDouble("price"),
+                        rs.getInt("stock")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -35,18 +34,17 @@ public class ProductDAO {
         String sql = "SELECT id, name, price, stock FROM products WHERE id = ?";
 
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
                 return new Product(
-                    rs.getInt("id"),
-                    rs.getString("name"),
-                    rs.getDouble("price"),
-                    rs.getInt("stock")
-                );
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getDouble("price"),
+                        rs.getInt("stock"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -58,7 +56,7 @@ public class ProductDAO {
         String sql = "UPDATE products SET stock = ? WHERE id = ?";
 
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, newStock);
             stmt.setInt(2, productId);
