@@ -12,9 +12,7 @@ import java.util.List;
 
 public class UserDAO {
 
-    /**
-     * Get user by username with role information
-     */
+    
     public User getUserByUsername(String username) {
         String sql = "SELECT u.user_id, u.full_name, u.username, u.password_hash, u.role_id, u.active, " +
                 "r.role_name FROM users u " +
@@ -42,12 +40,10 @@ public class UserDAO {
             e.printStackTrace();
         }
 
-        return null; // user not found
+        return null; 
     }
 
-    /**
-     * Get user by user_id
-     */
+    
     public User getUserById(int userId) {
         String sql = "SELECT u.user_id, u.full_name, u.username, u.password_hash, u.role_id, u.active, " +
                 "r.role_name FROM users u " +
@@ -77,9 +73,7 @@ public class UserDAO {
         return null;
     }
 
-    /**
-     * Get all users
-     */
+    
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
         String sql = "SELECT u.user_id, u.full_name, u.username, u.password_hash, u.role_id, u.active, " +
@@ -108,9 +102,7 @@ public class UserDAO {
         return users;
     }
 
-    /**
-     * Create a new user
-     */
+    
     public boolean createUser(User user) {
         String sql = "INSERT INTO users (full_name, username, password_hash, role_id, active) " +
                 "VALUES (?, ?, ?, ?, ?)";

@@ -3,10 +3,7 @@ package com.possystem.sajilopos.model;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * Sale Model
- * Represents a sale transaction
- */
+
 public class Sale {
     private int id;
     private int userId;
@@ -16,9 +13,7 @@ public class Sale {
     private double finalAmount;
     private LocalDateTime saleDate;
 
-    /**
-     * Constructor with user tracking
-     */
+    
     public Sale(int id, List<SaleItem> items, double discount, int userId) {
         this.id = id;
         this.userId = userId;
@@ -29,14 +24,12 @@ public class Sale {
         this.finalAmount = totalAmount - discount;
     }
 
-    /**
-     * Legacy constructor without userId (for backwards compatibility)
-     */
+   
     public Sale(int id, List<SaleItem> items, double discount) {
         this(id, items, discount, 0);
     }
 
-    // Getters
+
     public int getId() {
         return id;
     }

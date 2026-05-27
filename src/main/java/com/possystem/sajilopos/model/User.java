@@ -9,7 +9,6 @@ public class User {
     private String roleName;
     private boolean active;
 
-    // Constructor with roleId
     public User(int userId, String fullName, String username, String passwordHash, int roleId, boolean active) {
         this.userId = userId;
         this.fullName = fullName;
@@ -19,7 +18,7 @@ public class User {
         this.active = active;
     }
 
-    // Constructor with roleName
+    
     public User(int userId, String fullName, String username, String passwordHash, String roleName, boolean active) {
         this.userId = userId;
         this.fullName = fullName;
@@ -29,7 +28,6 @@ public class User {
         this.active = active;
     }
 
-    // Getters and Setters
     public int getUserId() {
         return userId;
     }

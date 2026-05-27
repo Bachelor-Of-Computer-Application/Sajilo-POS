@@ -8,10 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
-/**
- * Login Controller
- * Handles user authentication via the JavaFX UI
- */
+
 public class LoginController {
 
     @FXML
@@ -25,23 +22,18 @@ public class LoginController {
 
     private AuthService authService = new AuthService();
 
-    /**
-     * Initialize the login screen
-     */
+    
     @FXML
     public void initialize() {
         errorLabel.setText("");
 
-        // Test database connection on startup
         if (!DBConnection.testConnection()) {
             errorLabel.setText("ERROR: Cannot connect to database. Check config.properties");
             errorLabel.setStyle("-fx-text-fill: red;");
         }
     }
 
-    /**
-     * Handle login button click
-     */
+    
     @FXML
     protected void onLoginButtonClick() {
         String username = usernameField.getText().trim();
@@ -54,13 +46,6 @@ public class LoginController {
 
         if (authService.login(username, password)) {
             showSuccess("Login successful!");
-            // TODO: Navigate to main POS screen
-            // Example:
-            // Stage stage = (Stage) usernameField.getScene().getWindow();
-            // FXMLLoader loader = new
-            // FXMLLoader(getClass().getResource("/fxml/main-screen.fxml"));
-            // Scene scene = new Scene(loader.load());
-            // stage.setScene(scene);
 
             clearFields();
         } else {
@@ -69,34 +54,25 @@ public class LoginController {
         }
     }
 
-    /**
-     * Handle clear button click
-     */
+    
     @FXML
     protected void onClearButtonClick() {
         clearFields();
         errorLabel.setText("");
     }
 
-    /**
-     * Display error message
-     */
+ 
     private void showError(String message) {
         errorLabel.setText("ERROR: " + message);
         errorLabel.setStyle("-fx-text-fill: red;");
     }
 
-    /**
-     * Display success message
-     */
     private void showSuccess(String message) {
         errorLabel.setText(message);
         errorLabel.setStyle("-fx-text-fill: green;");
     }
 
-    /**
-     * Clear input fields
-     */
+   
     private void clearFields() {
         usernameField.clear();
         passwordField.clear();

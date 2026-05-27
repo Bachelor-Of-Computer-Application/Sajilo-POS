@@ -4,17 +4,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-/**
- * Database Connection Manager
- * Handles MSSQL connection pooling and management
- */
+
 public class DBConnection {
 
-    /**
-     * Get a new database connection
-     * 
-     * @return Connection object or null if connection fails
-     */
+   
     public static Connection getConnection() {
         try {
             String url = Config.get("db.url");
@@ -42,11 +35,6 @@ public class DBConnection {
         }
     }
 
-    /**
-     * Test database connectivity
-     * 
-     * @return true if connection is successful
-     */
     public static boolean testConnection() {
         try (Connection conn = getConnection()) {
             return conn != null;

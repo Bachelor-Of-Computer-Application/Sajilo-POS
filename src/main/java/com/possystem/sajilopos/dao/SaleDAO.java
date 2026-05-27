@@ -6,18 +6,9 @@ import com.possystem.sajilopos.model.SaleItem;
 
 import java.sql.*;
 
-/**
- * Sale Data Access Object
- * Handles database operations for sales and sale items
- */
+
 public class SaleDAO {
 
-    /**
-     * Save a sale transaction with all its items
-     * 
-     * @param sale Sale object containing items and details
-     * @return true if successfully saved, false otherwise
-     */
     public boolean saveSale(Sale sale) {
         String saleSql = "INSERT INTO sales (user_id, total_amount, discount, final_amount, sale_date) " +
                 "VALUES (?, ?, ?, ?, ?)";
@@ -32,7 +23,6 @@ public class SaleDAO {
 
             conn.setAutoCommit(false);
 
-            // Save the sale
             try (PreparedStatement saleStmt = conn.prepareStatement(saleSql, Statement.RETURN_GENERATED_KEYS)) {
                 saleStmt.setInt(1, sale.getUserId());
                 saleStmt.setDouble(2, sale.getTotalAmount());
@@ -41,14 +31,12 @@ public class SaleDAO {
                 saleStmt.setTimestamp(5, Timestamp.valueOf(sale.getSaleDate()));
                 saleStmt.executeUpdate();
 
-                // Get generated sale ID
                 try (ResultSet keys = saleStmt.getGeneratedKeys()) {
                     int saleId = 0;
                     if (keys.next()) {
                         saleId = keys.getInt(1);
                     }
 
-                    // Save each sale item
                     try (PreparedStatement itemStmt = conn.prepareStatement(itemSql)) {
                         for (SaleItem item : sale.getItems()) {
                             itemStmt.setInt(1, saleId);

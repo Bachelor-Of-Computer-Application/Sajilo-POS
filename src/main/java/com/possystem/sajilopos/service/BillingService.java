@@ -11,10 +11,6 @@ import com.possystem.sajilopos.model.User;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Billing Service
- * Handles bill generation, item management, and sale processing
- */
 public class BillingService {
 
     private final ProductDAO productDAO = new ProductDAO();
@@ -22,13 +18,7 @@ public class BillingService {
     private final SessionManager sessionManager = SessionManager.getInstance();
     private final List<SaleItem> currentItems = new ArrayList<>();
 
-    /**
-     * Add item to current bill
-     * 
-     * @param productId Product ID to add
-     * @param quantity  Quantity of the product
-     * @return Message indicating success or error
-     */
+   
     public String addItem(int productId, int quantity) {
         if (quantity <= 0) {
             return "Quantity must be greater than 0.";
@@ -44,14 +34,13 @@ public class BillingService {
             return "Insufficient stock. Available: " + product.getStock();
         }
 
-        // Check if product already exists in bill, if yes update quantity
+        
         for (SaleItem item : currentItems) {
             if (item.getProduct().getId() == productId) {
                 int newQuantity = item.getQuantity() + quantity;
                 if (product.getStock() < newQuantity) {
                     return "Insufficient stock for additional quantity. Available: " + product.getStock();
                 }
-                // Update quantity (we need to recreate the item to update subtotal)
                 currentItems.remove(item);
                 currentItems.add(new SaleItem(product, newQuantity));
                 return "Item quantity updated.";
@@ -62,11 +51,7 @@ public class BillingService {
         return "Item added to bill.";
     }
 
-    /**
-     * Remove item from current bill
-     * 
-     * @param index Index of the item to remove
-     */
+    
     public void removeItem(int index) {
         if (index >= 0 && index < currentItems.size()) {
             SaleItem removed = currentItems.remove(index);
@@ -74,41 +59,27 @@ public class BillingService {
         }
     }
 
-    /**
-     * Get current bill items
-     */
+    
     public List<SaleItem> getCurrentItems() {
         return new ArrayList<>(currentItems);
     }
 
-    /**
-     * Calculate total before discount
-     */
     public double getTotal() {
         return currentItems.stream().mapToDouble(SaleItem::getSubtotal).sum();
     }
 
-    /**
-     * Get number of items in the current bill
-     */
+    
     public int getItemCount() {
         return currentItems.size();
     }
 
-    /**
-     * Calculate total after discount
-     */
+   
     public double getFinalAmount(double discount) {
         double total = getTotal();
         return Math.max(0, total - discount); // Discount cannot make total negative
     }
 
-    /**
-     * Process and save the sale
-     * 
-     * @param discount Discount amount to apply
-     * @return true if sale was successfully saved, false otherwise
-     */
+    
     public boolean processSale(double discount) {
         if (currentItems.isEmpty()) {
             System.err.println("Cannot process empty bill.");
@@ -127,7 +98,6 @@ public class BillingService {
             boolean saved = saleDAO.saveSale(sale);
 
             if (saved) {
-                // Update stock for each item
                 for (SaleItem item : currentItems) {
                     int newStock = item.getProduct().getStock() - item.getQuantity();
                     boolean updated = productDAO.updateStock(item.getProduct().getId(), newStock);
@@ -138,7 +108,7 @@ public class BillingService {
                 }
 
                 System.out.println("Sale processed successfully by " + currentUser.getFullName());
-                currentItems.clear(); // Clear bill after successful sale
+                currentItems.clear(); 
                 return true;
             } else {
                 System.err.println("Failed to save sale to database.");
@@ -152,9 +122,7 @@ public class BillingService {
         }
     }
 
-    /**
-     * Clear current bill without saving
-     */
+    
     public void clearBill() {
         if (!currentItems.isEmpty()) {
             System.out.println("Bill cleared. " + currentItems.size() + " items discarded.");
@@ -162,9 +130,7 @@ public class BillingService {
         currentItems.clear();
     }
 
-    /**
-     * Get bill summary as string
-     */
+    
     public String getBillSummary() {
         StringBuilder sb = new StringBuilder();
         sb.append("========== BILL SUMMARY ==========\n");

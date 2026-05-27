@@ -1,9 +1,6 @@
 package com.possystem.sajilopos.model;
 
-/**
- * User Role Enumeration
- * Defines the available roles in the POS system
- */
+
 public enum Role {
     ADMIN("ADMIN", 1),
     MANAGER("MANAGER", 2),
@@ -25,9 +22,7 @@ public enum Role {
         return roleId;
     }
 
-    /**
-     * Get role from role name
-     */
+    
     public static Role fromName(String name) {
         for (Role role : Role.values()) {
             if (role.roleName.equalsIgnoreCase(name)) {
@@ -37,9 +32,7 @@ public enum Role {
         return null;
     }
 
-    /**
-     * Get role from role ID
-     */
+    
     public static Role fromId(int id) {
         for (Role role : Role.values()) {
             if (role.roleId == id) {
@@ -49,9 +42,7 @@ public enum Role {
         return null;
     }
 
-    /**
-     * Check if role has permission for operation
-     */
+    
     public boolean hasPermission(String operation) {
         switch (this) {
             case ADMIN:
