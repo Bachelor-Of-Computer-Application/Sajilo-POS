@@ -4,6 +4,12 @@ import com.possystem.sajilopos.config.DBConnection;
 import com.possystem.sajilopos.model.Sale;
 import com.possystem.sajilopos.model.SaleItem;
 
+import com.possystem.sajilopos.model.Sale;
+import java.time.LocalDate;
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
+
 import java.sql.*;
 
 
