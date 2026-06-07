@@ -60,4 +60,52 @@ public class SaleDAO {
         }
         return false;
     }
+    public List<Sale> getSalesHistory() {
+    List<Sale> sales = new ArrayList<>();
+    String sql = "SELECT sale_id, user_id, total_amount, discount, final_amount, sale_date " +
+                 "FROM sales ORDER BY sale_date DESC";
+    try (Connection conn = DBConnection.getConnection();
+         Statement stmt = conn.createStatement();
+         ResultSet rs = stmt.executeQuery(sql)) {
+        while (rs.next()) {
+            Sale sale = new Sale(
+                rs.getInt("sale_id"),
+                new ArrayList<>(),
+                rs.getDouble("discount"),
+                rs.getInt("user_id")
+            );
+            sales.add(sale);
+        }
+    } catch (SQLException e) {
+        System.err.println("Error fetching sales history: " + e.getMessage());
+        e.printStackTrace();
+    }
+    return sales;
+}
+
+public List<Sale> getSalesByDateRange(LocalDate from, LocalDate to) {
+    List<Sale> sales = new ArrayList<>();
+    String sql = "SELECT sale_id, user_id, total_amount, discount, final_amount, sale_date " +
+                 "FROM sales WHERE CAST(sale_date AS DATE) BETWEEN ? AND ? ORDER BY sale_date DESC";
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setDate(1, Date.valueOf(from));
+        stmt.setDate(2, Date.valueOf(to));
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
+            Sale sale = new Sale(
+                rs.getInt("sale_id"),
+                new ArrayList<>(),
+                rs.getDouble("discount"),
+                rs.getInt("user_id")
+            );
+            sales.add(sale);
+        }
+    } catch (SQLException e) {
+        System.err.println("Error fetching sales by date: " + e.getMessage());
+        e.printStackTrace();
+    }
+    return sales;
+}
+
 }
