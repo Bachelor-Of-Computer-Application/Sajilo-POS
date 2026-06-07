@@ -11,7 +11,7 @@ public class ProductDAO {
 
     public List<Product> getAllProducts() {
         List<Product> products = new ArrayList<>();
-        String sql = "SELECT id, name, price, stock FROM products";
+        String sql = "SELECT product_id, product_name, price, stock FROM products";
 
         try (Connection conn = DBConnection.getConnection();
                 Statement stmt = conn.createStatement();
@@ -19,8 +19,8 @@ public class ProductDAO {
 
             while (rs.next()) {
                 products.add(new Product(
-                        rs.getInt("id"),
-                        rs.getString("name"),
+                        rs.getInt("product_id"),
+                        rs.getString("product_name"),
                         rs.getDouble("price"),
                         rs.getInt("stock")));
             }
@@ -31,7 +31,8 @@ public class ProductDAO {
     }
 
     public Product getProductById(int id) {
-        String sql = "SELECT id, name, price, stock FROM products WHERE id = ?";
+        String sql = "SELECT product_id, product_name, price, stock FROM products WHERE product_id = ?";
+
 
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -41,8 +42,8 @@ public class ProductDAO {
 
             if (rs.next()) {
                 return new Product(
-                        rs.getInt("id"),
-                        rs.getString("name"),
+                        rs.getInt("product_id"),
+                        rs.getString("product_name"),
                         rs.getDouble("price"),
                         rs.getInt("stock"));
             }
@@ -53,7 +54,7 @@ public class ProductDAO {
     }
 
     public boolean updateStock(int productId, int newStock) {
-        String sql = "UPDATE products SET stock = ? WHERE id = ?";
+        String sql = "UPDATE products SET stock = ? WHERE product_id = ?";
 
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -67,4 +68,51 @@ public class ProductDAO {
         }
         return false;
     }
+    public boolean addProduct(Product product) {
+    String sql = "INSERT INTO products (product_name, price, stock) VALUES (?, ?, ?)";
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setString(1, product.getName());
+        stmt.setDouble(2, product.getPrice());
+        stmt.setInt(3, product.getStock());
+        return stmt.executeUpdate() > 0;
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return false;
+}
+
+public boolean deleteProduct(int productId) {
+    String sql = "DELETE FROM products WHERE product_id = ?";
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setInt(1, productId);
+        return stmt.executeUpdate() > 0;
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return false;
+}
+
+public List<Product> searchProductByName(String name) {
+    List<Product> products = new ArrayList<>();
+    String sql = "SELECT product_id, product_name, price, stock FROM products WHERE product_name LIKE ?";
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setString(1, "%" + name + "%");
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
+            products.add(new Product(
+                rs.getInt("product_id"),
+                rs.getString("product_name"),
+                rs.getDouble("price"),
+                rs.getInt("stock")
+            ));
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return products;
+}
+
 }
