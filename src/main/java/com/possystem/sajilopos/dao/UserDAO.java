@@ -125,4 +125,35 @@ public class UserDAO {
 
         return false;
     }
+    public boolean updateUser(User user) {
+    String sql = "UPDATE users SET full_name = ?, username = ?, role_id = ?, active = ? WHERE user_id = ?";
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setString(1, user.getFullName());
+        stmt.setString(2, user.getUsername());
+        stmt.setInt(3, user.getRoleId());
+        stmt.setBoolean(4, user.isActive());
+        stmt.setInt(5, user.getUserId());
+        return stmt.executeUpdate() > 0;
+    } catch (SQLException e) {
+        System.err.println("Error updating user: " + e.getMessage());
+        e.printStackTrace();
+    }
+    return false;
+}
+
+public boolean deleteUser(int userId) {
+    // Soft delete — just deactivate the account
+    String sql = "UPDATE users SET active = 0 WHERE user_id = ?";
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setInt(1, userId);
+        return stmt.executeUpdate() > 0;
+    } catch (SQLException e) {
+        System.err.println("Error deleting user: " + e.getMessage());
+        e.printStackTrace();
+    }
+    return false;
+}
+
 }
