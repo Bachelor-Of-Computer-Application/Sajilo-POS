@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.possystem.sajilopos.controller.product.ProductController">
+
+    <!-- TOP HEADER -->
+    <top>
+        <Label text="PRODUCT MANAGEMENT"
+               style="-fx-font-size: 20px; -fx-font-weight: bold;"
+               BorderPane.alignment="CENTER"/>
+    </top>
+
+    <!-- LEFT FORM -->
+    <left>
+        <VBox spacing="10" style="-fx-padding: 15;">
+
+            <Label text="Add / Update Product" style="-fx-font-size: 16px;"/>
+
+            <TextField fx:id="nameField" promptText="Product Name"/>
+            <TextField fx:id="priceField" promptText="Price"/>
+            <TextField fx:id="stockField" promptText="Stock Quantity"/>
+
+            <Button text="Add Product" onAction="#handleAdd"/>
+            <Button text="Update Product" onAction="#handleUpdate"/>
+            <Button text="Delete Product" onAction="#handleDelete"/>
+
+        </VBox>
+    </left>
+
+    <!-- CENTER TABLE -->
+    <center>
+        <TableView fx:id="productTable">
+
+            <columns>
+                <TableColumn fx:id="colId" text="ID"/>
+                <TableColumn fx:id="colName" text="Name"/>
+                <TableColumn fx:id="colPrice" text="Price"/>
+                <TableColumn fx:id="colStock" text="Stock"/>
+            </columns>
+
+        </TableView>
+    </center>
+
+</BorderPane>
