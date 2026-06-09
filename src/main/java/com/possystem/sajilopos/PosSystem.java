@@ -11,8 +11,7 @@ public class PosSystem extends Application {
     public void start(Stage stage) throws Exception {
 
         FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/fxml/auth/login.fxml")
-        );
+                getClass().getResource("/fxml/auth/login.fxml"));
 
         Scene scene = new Scene(loader.load());
 
@@ -22,6 +21,6 @@ public class PosSystem extends Application {
     }
 
     public static void main(String[] args) {
-        launch();
+        launch(args);
     }
 }
