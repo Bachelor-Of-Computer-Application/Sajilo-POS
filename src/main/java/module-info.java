@@ -4,6 +4,7 @@ module com.possystem.sajilopos {
     requires javafx.fxml;
     requires javafx.graphics;
     requires java.sql;
+    requires jbcrypt;
 
     opens com.possystem.sajilopos to javafx.fxml;
     opens com.possystem.sajilopos.controller.auth to javafx.fxml;

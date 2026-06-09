@@ -1,9 +1,10 @@
 package com.possystem.sajilopos.service;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import com.possystem.sajilopos.config.SessionManager;
 import com.possystem.sajilopos.dao.UserDAO;
 import com.possystem.sajilopos.model.User;
-import org.mindrot.jbcrypt.BCrypt;
 
 
 public class AuthService {
@@ -44,7 +45,6 @@ public class AuthService {
 
         } catch (Exception e) {
             System.err.println("Error during login: " + e.getMessage());
-            e.printStackTrace();
             return false;
         }
     }
