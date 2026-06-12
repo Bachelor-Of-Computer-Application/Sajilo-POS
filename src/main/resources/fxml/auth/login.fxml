@@ -19,22 +19,19 @@
         <HBox prefHeight="500.0" prefWidth="800.0">
 
             <!-- LEFT PANEL -->
-
             <VBox alignment="CENTER" prefWidth="400"
                   style="-fx-background-color: linear-gradient(to bottom right, #4facfe, #00f2fe);">
 
                 <children>
-
-                    <Label style="-fx-font-size: 35px;                                   -fx-font-weight: bold;                                   -fx-text-fill: white;" text="SAJILO POS" />
-
-                    <Label style="-fx-text-fill: white;                                   -fx-font-size: 16px;" text="General POS System" />
-
+                    <Label style="-fx-font-size: 35px; -fx-font-weight: bold; -fx-text-fill: white;" 
+                           text="SAJILO POS" />
+                    <Label style="-fx-text-fill: white; -fx-font-size: 16px;" 
+                           text="General POS System" />
                 </children>
 
             </VBox>
 
             <!-- RIGHT PANEL -->
-
             <VBox alignment="CENTER" prefWidth="400" spacing="15">
 
                 <padding>
@@ -42,14 +39,25 @@
                 </padding>
 
                 <children>
+                    <Label style="-fx-font-size: 28px; -fx-font-weight: bold;" 
+                           text="Login" />
 
-                    <Label style="-fx-font-size: 28px;                                   -fx-font-weight: bold;" text="Login" />
+                    <TextField fx:id="companyCodeField" 
+                              prefWidth="250" 
+                              promptText="Company Code (e.g., GPS001)" />
 
-                    <TextField fx:id="usernameField" prefWidth="250" promptText="Username" />
+                    <TextField fx:id="usernameField" 
+                              prefWidth="250" 
+                              promptText="Username" />
 
-                    <PasswordField fx:id="passwordField" prefWidth="250" promptText="Password" />
+                    <PasswordField fx:id="passwordField" 
+                                  prefWidth="250" 
+                                  promptText="Password" />
 
-                    <Button onAction="#handleLogin" prefWidth="250" style="-fx-background-color: #4facfe;                                    -fx-text-fill: white;                                    -fx-font-size: 14px;                                    -fx-font-weight: bold;" text="Login" />
+                    <Button onAction="#handleLogin" 
+                           prefWidth="250" 
+                           style="-fx-background-color: #4facfe; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;" 
+                           text="Login" />
 
                 </children>
 

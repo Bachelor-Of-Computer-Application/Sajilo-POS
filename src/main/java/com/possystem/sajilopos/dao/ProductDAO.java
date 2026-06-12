@@ -11,7 +11,7 @@ public class ProductDAO {
 
     public List<Product> getAllProducts() {
         List<Product> products = new ArrayList<>();
-        String sql = "SELECT product_id, product_name, price, stock FROM products";
+        String sql = "SELECT product_id, product_name, price, stock FROM products WHERE active = TRUE";
 
         try (Connection conn = DBConnection.getConnection();
                 Statement stmt = conn.createStatement();
@@ -96,7 +96,7 @@ public boolean deleteProduct(int productId) {
 
 public List<Product> searchProductByName(String name) {
     List<Product> products = new ArrayList<>();
-    String sql = "SELECT product_id, product_name, price, stock FROM products WHERE product_name LIKE ?";
+    String sql = "SELECT product_id, product_name, price, stock FROM products WHERE product_name LIKE ? AND active = TRUE";
     try (Connection conn = DBConnection.getConnection();
          PreparedStatement stmt = conn.prepareStatement(sql)) {
         stmt.setString(1, "%" + name + "%");

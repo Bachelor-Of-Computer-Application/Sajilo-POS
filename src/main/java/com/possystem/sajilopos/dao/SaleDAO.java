@@ -14,8 +14,8 @@ import java.sql.*;
 public class SaleDAO {
 
     public boolean saveSale(Sale sale) {
-        String saleSql = "INSERT INTO sales (user_id, total_amount, discount, final_amount, sale_date) " +
-                "VALUES (?, ?, ?, ?, ?)";
+        String saleSql = "INSERT INTO sales (company_id, user_id, total_amount, discount, final_amount, sale_date) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
         String itemSql = "INSERT INTO sale_items (sale_id, product_id, quantity, subtotal) " +
                 "VALUES (?, ?, ?, ?)";
 
@@ -28,11 +28,12 @@ public class SaleDAO {
             conn.setAutoCommit(false);
 
             try (PreparedStatement saleStmt = conn.prepareStatement(saleSql, Statement.RETURN_GENERATED_KEYS)) {
-                saleStmt.setInt(1, sale.getUserId());
-                saleStmt.setDouble(2, sale.getTotalAmount());
-                saleStmt.setDouble(3, sale.getDiscount());
-                saleStmt.setDouble(4, sale.getFinalAmount());
-                saleStmt.setTimestamp(5, Timestamp.valueOf(sale.getSaleDate()));
+                saleStmt.setInt(1, sale.getCompanyId());
+                saleStmt.setInt(2, sale.getUserId());
+                saleStmt.setDouble(3, sale.getTotalAmount());
+                saleStmt.setDouble(4, sale.getDiscount());
+                saleStmt.setDouble(5, sale.getFinalAmount());
+                saleStmt.setTimestamp(6, Timestamp.valueOf(sale.getSaleDate()));
                 saleStmt.executeUpdate();
 
                 try (ResultSet keys = saleStmt.getGeneratedKeys()) {
@@ -67,7 +68,7 @@ public class SaleDAO {
 
     public List<Sale> getSalesHistory() {
         List<Sale> sales = new ArrayList<>();
-        String sql = "SELECT sale_id, user_id, total_amount, discount, final_amount, sale_date " +
+        String sql = "SELECT sale_id, company_id, user_id, total_amount, discount, final_amount, sale_date " +
                 "FROM sales ORDER BY sale_date DESC";
         try (Connection conn = DBConnection.getConnection();
                 Statement stmt = conn.createStatement();
@@ -89,8 +90,8 @@ public class SaleDAO {
 
     public List<Sale> getSalesByDateRange(LocalDate from, LocalDate to) {
         List<Sale> sales = new ArrayList<>();
-        String sql = "SELECT sale_id, user_id, total_amount, discount, final_amount, sale_date " +
-                "FROM sales WHERE CAST(sale_date AS DATE) BETWEEN ? AND ? ORDER BY sale_date DESC";
+        String sql = "SELECT sale_id, company_id, user_id, total_amount, discount, final_amount, sale_date " +
+                "FROM sales WHERE DATE(sale_date) BETWEEN ? AND ? ORDER BY sale_date DESC";
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setDate(1, Date.valueOf(from));

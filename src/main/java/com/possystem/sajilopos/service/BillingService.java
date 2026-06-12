@@ -93,7 +93,8 @@ public class BillingService {
 
         try {
             User currentUser = sessionManager.getCurrentUser();
-            Sale sale = new Sale(0, new ArrayList<>(currentItems), discount, currentUser.getUserId());
+            int companyId = sessionManager.getCurrentCompanyId();
+            Sale sale = new Sale(companyId, new ArrayList<>(currentItems), discount, currentUser.getUserId());
 
             boolean saved = saleDAO.saveSale(sale);
 
@@ -107,7 +108,7 @@ public class BillingService {
                     }
                 }
 
-                System.out.println("Sale processed successfully by " + currentUser.getFullName());
+                System.out.println("Sale processed successfully by " + currentUser.getUsername());
                 currentItems.clear(); 
                 return true;
             } else {
