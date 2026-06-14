@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.possystem.sajilopos.controller.reports.reportscontroller"
+            style="-fx-background-color: #f4f6f9;">
+
+    <top>
+        <VBox spacing="10" style="-fx-padding: 15; -fx-background-color: white;">
+            <Label text="Reports Dashboard"
+                   style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
+
+            <HBox spacing="10">
+                <TextField fx:id="searchField" promptText="Search reports..."/>
+                <Button text="Filter" onAction="#onFilter"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <TableView fx:id="reportsTable">
+            <columns>
+                <TableColumn fx:id="colDate" text="Date" prefWidth="120"/>
+                <TableColumn fx:id="colSales" text="Total Sales" prefWidth="120"/>
+                <TableColumn fx:id="colItems" text="Items Sold" prefWidth="120"/>
+                <TableColumn fx:id="colProfit" text="Profit" prefWidth="120"/>
+            </columns>
+        </TableView>
+    </center>
+
+    <bottom>
+        <HBox spacing="10" style="-fx-padding: 15; -fx-background-color: white;">
+            <Button text="Refresh" onAction="#onRefresh"/>
+            <Button text="Export" onAction="#onExport"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

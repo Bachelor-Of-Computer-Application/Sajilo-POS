@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.possystem.sajilopos.controller.purchases.purchasescontroller"
+            style="-fx-background-color: #f4f6f9;">
+
+    <top>
+        <VBox spacing="10" style="-fx-padding: 15; -fx-background-color: white;">
+            <Label text="Purchases Management"
+                   style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
+
+            <HBox spacing="10">
+                <TextField fx:id="searchField"
+                           promptText="Search purchases by supplier, item, or ID..."
+                           HBox.hgrow="ALWAYS"/>
+                <Button text="Search" onAction="#onSearch"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <TableView fx:id="purchasesTable">
+            <columns>
+                <TableColumn fx:id="colId" text="ID" prefWidth="80"/>
+                <TableColumn fx:id="colItem" text="Item" prefWidth="160"/>
+                <TableColumn fx:id="colSupplier" text="Supplier" prefWidth="160"/>
+                <TableColumn fx:id="colQty" text="Qty" prefWidth="80"/>
+                <TableColumn fx:id="colCost" text="Cost" prefWidth="100"/>
+                <TableColumn fx:id="colDate" text="Date" prefWidth="140"/>
+            </columns>
+        </TableView>
+    </center>
+
+    <bottom>
+        <HBox spacing="10" style="-fx-padding: 15; -fx-background-color: white;">
+            <Button text="Add Purchase" onAction="#onAdd"/>
+            <Button text="Edit" onAction="#onEdit"/>
+            <Button text="Delete" onAction="#onDelete"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

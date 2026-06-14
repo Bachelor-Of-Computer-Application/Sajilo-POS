@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.possystem.sajilopos.controller.suppliers.suppliersController"
+      spacing="10"
+      style="-fx-padding: 20; -fx-background-color: #f1f5f9;">
+
+    <!-- TITLE -->
+    <Label text="Supplier Management"
+           style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+
+    <!-- SEARCH BAR -->
+    <HBox spacing="10">
+        <TextField fx:id="searchField"
+                   promptText="Search supplier..."
+                   HBox.hgrow="ALWAYS"/>
+        <Button text="Search" onAction="#searchAction"/>
+    </HBox>
+
+    <!-- TABLE -->
+    <TableView fx:id="supplierTable" prefHeight="300">
+
+        <columns>
+            <TableColumn fx:id="idColumn" text="ID"/>
+            <TableColumn fx:id="nameColumn" text="Supplier"/>
+            <TableColumn fx:id="phoneColumn" text="Phone"/>
+            <TableColumn fx:id="addressColumn" text="Address"/>
+        </columns>
+
+    </TableView>
+
+    <!-- ACTION BUTTONS -->
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+
+        <Button text="Add" onAction="#addAction"/>
+        <Button text="Edit" onAction="#editAction"/>
+        <Button text="Delete" onAction="#deleteAction"/>
+
+    </HBox>
+
+</VBox>

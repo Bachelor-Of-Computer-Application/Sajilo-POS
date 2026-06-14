@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.possystem.sajilopos.controller.sales.salescontroller"
+      spacing="10"
+      style="-fx-padding: 20; -fx-background-color: #f8fafc;">
+
+    <Label text="Sales / POS"
+           style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+
+    <TableView fx:id="cartTable" prefHeight="300">
+
+        <columns>
+            <TableColumn fx:id="productCol" text="Product"/>
+            <TableColumn fx:id="qtyCol" text="Qty"/>
+            <TableColumn fx:id="priceCol" text="Price"/>
+        </columns>
+
+    </TableView>
+
+    <HBox spacing="10">
+
+        <TextField fx:id="barcodeField"
+                   promptText="Scan / Enter Barcode"
+                   HBox.hgrow="ALWAYS"/>
+
+        <Button text="Add Item" onAction="#addItem"/>
+
+    </HBox>
+
+    <Label fx:id="totalLabel"
+           text="Total: 0"
+           style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+    <Button text="Checkout" onAction="#checkout"/>
+
+</VBox>

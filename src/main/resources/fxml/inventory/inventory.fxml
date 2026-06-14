@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.possystem.sajilopos.controller.inventory.inventorycontroller"
+            style="-fx-background-color: #f4f6f9;">
+
+    <top>
+        <VBox spacing="10" style="-fx-padding: 15; -fx-background-color: white;">
+            <Label text="Inventory Management"
+                   style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
+
+            <HBox spacing="10">
+                <TextField fx:id="searchField"
+                           promptText="Search products..."
+                           HBox.hgrow="ALWAYS"/>
+                <Button text="Search" onAction="#onSearch"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <TableView fx:id="inventoryTable" style="-fx-padding: 10;">
+            <columns>
+                <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
+                <TableColumn fx:id="colName" text="Product Name" prefWidth="180"/>
+                <TableColumn fx:id="colCategory" text="Category" prefWidth="120"/>
+                <TableColumn fx:id="colStock" text="Stock" prefWidth="80"/>
+                <TableColumn fx:id="colPrice" text="Price" prefWidth="100"/>
+                <TableColumn fx:id="colSupplier" text="Supplier" prefWidth="150"/>
+            </columns>
+        </TableView>
+    </center>
+
+    <bottom>
+        <HBox spacing="10" style="-fx-padding: 15; -fx-background-color: white;">
+            <Button text="Add" onAction="#onAdd"/>
+            <Button text="Edit" onAction="#onEdit"/>
+            <Button text="Delete" onAction="#onDelete"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

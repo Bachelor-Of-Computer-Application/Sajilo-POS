@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.possystem.sajilopos.controller.users.userscontroller"
+            style="-fx-background-color: #f4f6f9;">
+
+    <top>
+        <VBox spacing="10" style="-fx-padding: 15; -fx-background-color: white;">
+            <Label text="User Management"
+                   style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
+
+            <HBox spacing="10">
+                <TextField fx:id="searchField"
+                           promptText="Search users by name, email, role..."
+                           HBox.hgrow="ALWAYS"/>
+                <Button text="Search" onAction="#onSearch"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <TableView fx:id="usersTable">
+            <columns>
+                <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
+                <TableColumn fx:id="colName" text="Name" prefWidth="150"/>
+                <TableColumn fx:id="colEmail" text="Email" prefWidth="200"/>
+                <TableColumn fx:id="colRole" text="Role" prefWidth="120"/>
+                <TableColumn fx:id="colStatus" text="Status" prefWidth="100"/>
+            </columns>
+        </TableView>
+    </center>
+
+    <bottom>
+        <HBox spacing="10" style="-fx-padding: 15; -fx-background-color: white;">
+            <Button text="Add User" onAction="#onAdd"/>
+            <Button text="Edit User" onAction="#onEdit"/>
+            <Button text="Delete User" onAction="#onDelete"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>
