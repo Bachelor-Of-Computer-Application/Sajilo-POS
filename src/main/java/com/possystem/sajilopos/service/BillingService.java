@@ -36,7 +36,7 @@ public class BillingService {
 
         
         for (SaleItem item : currentItems) {
-            if (item.getProduct().getId() == productId) {
+            if (item.getProduct().getProductId() == productId) {
                 int newQuantity = item.getQuantity() + quantity;
                 if (product.getStock() < newQuantity) {
                     return "Insufficient stock for additional quantity. Available: " + product.getStock();
@@ -55,7 +55,7 @@ public class BillingService {
     public void removeItem(int index) {
         if (index >= 0 && index < currentItems.size()) {
             SaleItem removed = currentItems.remove(index);
-            System.out.println("Item removed: " + removed.getProduct().getName());
+            System.out.println("Item removed: " + removed.getProduct().getProductName());
         }
     }
 
@@ -101,10 +101,10 @@ public class BillingService {
             if (saved) {
                 for (SaleItem item : currentItems) {
                     int newStock = item.getProduct().getStock() - item.getQuantity();
-                    boolean updated = productDAO.updateStock(item.getProduct().getId(), newStock);
+                    boolean updated = productDAO.updateStock(item.getProduct().getProductId(), newStock, companyId);
                     if (!updated) {
                         System.err
-                                .println("Warning: Failed to update stock for product: " + item.getProduct().getName());
+                                .println("Warning: Failed to update stock for product: " + item.getProduct().getProductName());
                     }
                 }
 
@@ -138,7 +138,7 @@ public class BillingService {
 
         for (SaleItem item : currentItems) {
             sb.append(String.format("%s x%d @ %.2f = %.2f\n",
-                    item.getProduct().getName(),
+                    item.getProduct().getProductName(),
                     item.getQuantity(),
                     item.getProduct().getPrice(),
                     item.getSubtotal()));

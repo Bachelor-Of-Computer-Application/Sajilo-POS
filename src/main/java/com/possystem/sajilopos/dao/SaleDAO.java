@@ -45,7 +45,7 @@ public class SaleDAO {
                     try (PreparedStatement itemStmt = conn.prepareStatement(itemSql)) {
                         for (SaleItem item : sale.getItems()) {
                             itemStmt.setInt(1, saleId);
-                            itemStmt.setInt(2, item.getProduct().getId());
+                            itemStmt.setInt(2, item.getProduct().getProductId());
                             itemStmt.setInt(3, item.getQuantity());
                             itemStmt.setDouble(4, item.getSubtotal());
                             itemStmt.addBatch();

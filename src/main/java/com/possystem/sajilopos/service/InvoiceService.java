@@ -28,7 +28,7 @@ public class InvoiceService {
 
         for (SaleItem item : sale.getItems()) {
             invoice.append(String.format("%-20s %5d %10.2f%n",
-                    item.getProduct().getName(),
+                    item.getProduct().getProductName(),
                     item.getQuantity(),
                     item.getSubtotal()));
         }
