@@ -2,6 +2,7 @@ package com.possystem.sajilopos.controller.dashboard;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 
 public class DashboardController {
@@ -11,22 +12,32 @@ public class DashboardController {
 
     private void loadView(String path) {
         try {
+            System.out.println("Loading view: " + path);
             rootPane.setCenter(
                     FXMLLoader.load(getClass().getResource(path))
             );
+            System.out.println("View loaded successfully: " + path);
         } catch (Exception e) {
+            System.err.println("Error loading view: " + path);
+            System.err.println("Error message: " + e.getMessage());
             e.printStackTrace();
+            
+            // Show error in the center pane
+            Label errorLabel = new Label("Error loading " + path + "\n" + e.getMessage());
+            errorLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: red; -fx-padding: 20;");
+            rootPane.setCenter(errorLabel);
         }
     }
 
     @FXML
     private void openDashboard() {
-        loadView("/fxml/dashboard/home.fxml");
+        // Load the main dashboard view (keep current center)
+        System.out.println("Dashboard home view - staying on current view");
     }
 
     @FXML
     private void openProducts() {
-        loadView("/fxml/products/products.fxml");
+        loadView("/fxml/product/product.fxml");
     }
 
     @FXML
@@ -46,8 +57,9 @@ public class DashboardController {
 
     @FXML
     private void openSales() {
-        loadView("/fxml/sales/pos.fxml");
+        loadView("/fxml/sales/sales.fxml");
     }
+    
     @FXML
     private void openInventory() {
         loadView("/fxml/inventory/inventory.fxml");
