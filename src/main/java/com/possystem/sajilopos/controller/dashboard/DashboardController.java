@@ -31,8 +31,7 @@ public class DashboardController {
 
     @FXML
     private void openDashboard() {
-        // Load the main dashboard view (keep current center)
-        System.out.println("Dashboard home view - staying on current view");
+        loadView("/fxml/dashboard/dashboard-home.fxml");
     }
 
     @FXML
