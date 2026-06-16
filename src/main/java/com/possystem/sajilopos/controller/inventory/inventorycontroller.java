@@ -1,221 +1,296 @@
 package com.possystem.sajilopos.controller.inventory;
 
+import com.possystem.sajilopos.model.InventoryHistory;
+import com.possystem.sajilopos.model.Product;
+import com.possystem.sajilopos.service.InventoryService;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
 
-import java.util.stream.Collectors;
+import java.time.format.DateTimeFormatter;
 
-public class inventorycontroller {
+public class InventoryController {
 
-    @FXML
-    private TextField searchField;
+    @FXML private TextField searchField;
+    @FXML private TableView<Product> inventoryTable;
+    @FXML private TableColumn<Product, Integer> colId;
+    @FXML private TableColumn<Product, String> colProduct;
+    @FXML private TableColumn<Product, Double> colPrice;
+    @FXML private TableColumn<Product, Integer> colStock;
+    @FXML private TableColumn<Product, String> colStatus;
 
-    @FXML
-    private TableView<Item> inventoryTable;
+    @FXML private TableView<InventoryHistory> historyTable;
+    @FXML private TableColumn<InventoryHistory, String> colHistoryProduct;
+    @FXML private TableColumn<InventoryHistory, String> colAction;
+    @FXML private TableColumn<InventoryHistory, Integer> colQty;
+    @FXML private TableColumn<InventoryHistory, String> colDate;
 
-    @FXML
-    private TableColumn<Item, String> colId;
-
-    @FXML
-    private TableColumn<Item, String> colName;
-
-    @FXML
-    private TableColumn<Item, String> colCategory;
-
-    @FXML
-    private TableColumn<Item, Integer> colStock;
-
-    @FXML
-    private TableColumn<Item, Double> colPrice;
-
-    @FXML
-    private TableColumn<Item, String> colSupplier;
-
-    private final ObservableList<Item> inventoryList = FXCollections.observableArrayList();
+    private final ObservableList<Product> products = FXCollections.observableArrayList();
+    private final ObservableList<InventoryHistory> history = FXCollections.observableArrayList();
+    private final InventoryService inventoryService = new InventoryService();
 
     @FXML
     public void initialize() {
+        // Setup inventory table columns
+        colId.setCellValueFactory(data -> 
+            new SimpleIntegerProperty(data.getValue().getProductId()).asObject());
+        
+        colProduct.setCellValueFactory(data -> 
+            new SimpleStringProperty(data.getValue().getProductName()));
+        
+        colPrice.setCellValueFactory(data -> 
+            new SimpleDoubleProperty(data.getValue().getPrice()).asObject());
+        
+        colStock.setCellValueFactory(data -> 
+            new SimpleIntegerProperty(data.getValue().getStock()).asObject());
+        
+        colStatus.setCellValueFactory(data -> 
+            new SimpleStringProperty(data.getValue().getStockStatus()));
 
-        colId.setCellValueFactory(data -> data.getValue().idProperty());
-        colName.setCellValueFactory(data -> data.getValue().nameProperty());
-        colCategory.setCellValueFactory(data -> data.getValue().categoryProperty());
-        colStock.setCellValueFactory(data -> data.getValue().stockProperty().asObject());
-        colPrice.setCellValueFactory(data -> data.getValue().priceProperty().asObject());
-        colSupplier.setCellValueFactory(data -> data.getValue().supplierProperty());
+        // Apply row coloring based on stock status
+        inventoryTable.setRowFactory(tv -> new TableRow<Product>() {
+            @Override
+            protected void updateItem(Product product, boolean empty) {
+                super.updateItem(product, empty);
+                if (empty || product == null) {
+                    setStyle("");
+                } else {
+                    if (product.isOutOfStock()) {
+                        setStyle("-fx-background-color: #fee2e2;"); // Light red
+                    } else if (product.isLowStock()) {
+                        setStyle("-fx-background-color: #fef3c7;"); // Light yellow
+                    } else {
+                        setStyle("");
+                    }
+                }
+            }
+        });
 
-        loadMockData();
+        // Setup history table columns
+        colHistoryProduct.setCellValueFactory(data -> 
+            new SimpleStringProperty(data.getValue().getProductName()));
+        
+        colAction.setCellValueFactory(data -> 
+            new SimpleStringProperty(data.getValue().getActionType().name()));
+        
+        colQty.setCellValueFactory(data -> 
+            new SimpleIntegerProperty(data.getValue().getQuantity()).asObject());
+        
+        colDate.setCellValueFactory(data -> {
+            if (data.getValue().getCreatedAt() != null) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                return new SimpleStringProperty(
+                    data.getValue().getCreatedAt().toLocalDateTime().format(formatter)
+                );
+            }
+            return new SimpleStringProperty("");
+        });
 
-        inventoryTable.setItems(inventoryList);
+        inventoryTable.setItems(products);
+        historyTable.setItems(history);
+
+        // Load data
+        loadInventory();
+        loadRecentHistory();
     }
 
-    private void loadMockData() {
+    private void loadInventory() {
+        try {
+            products.clear();
+            products.addAll(inventoryService.getAllProducts());
+            System.out.println("Loaded " + products.size() + " products");
+        } catch (Exception e) {
+            showError("Error Loading Inventory", e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
-        inventoryList.addAll(
-                new Item("P001", "Rice 10kg", "Grocery", 50, 1200.0, "ABC Suppliers"),
-                new Item("P002", "Sugar 1kg", "Grocery", 200, 120.0, "XYZ Traders"),
-                new Item("P003", "Milk Pack", "Dairy", 80, 60.0, "Dairy Co."),
-                new Item("P004", "Soap", "Hygiene", 150, 45.0, "CleanMart")
-        );
+    private void loadRecentHistory() {
+        try {
+            history.clear();
+            history.addAll(inventoryService.getTodayHistory());
+            System.out.println("Loaded " + history.size() + " history records");
+        } catch (Exception e) {
+            showError("Error Loading History", e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     @FXML
-    private void onSearch() {
+    private void handleSearch() {
+        try {
+            String searchText = searchField.getText();
+            products.clear();
+            products.addAll(inventoryService.searchProducts(searchText));
+        } catch (Exception e) {
+            showError("Search Error", e.getMessage());
+        }
+    }
 
-        String keyword = searchField.getText().trim().toLowerCase();
+    @FXML
+    private void handleRefresh() {
+        searchField.clear();
+        loadInventory();
+        loadRecentHistory();
+    }
 
-        if (keyword.isEmpty()) {
-            inventoryTable.setItems(inventoryList);
+    @FXML
+    private void handleAdjustStock() {
+        Product selected = inventoryTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            showWarning("No Selection", "Please select a product to adjust stock");
             return;
         }
 
-        ObservableList<Item> filtered = FXCollections.observableArrayList(
-                inventoryList.stream()
-                        .filter(i ->
-                                i.getName().toLowerCase().contains(keyword)
-                                        || i.getCategory().toLowerCase().contains(keyword)
-                                        || i.getId().toLowerCase().contains(keyword))
-                        .collect(Collectors.toList())
-        );
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Adjust Stock");
+        dialog.setHeaderText("Adjust stock for: " + selected.getProductName());
 
-        inventoryTable.setItems(filtered);
+        ButtonType okButton = new ButtonType("Adjust", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(okButton, ButtonType.CANCEL);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+
+        TextField qtyField = new TextField();
+        qtyField.setPromptText("Enter quantity (+/-)");
+        TextArea remarksArea = new TextArea();
+        remarksArea.setPromptText("Remarks...");
+        remarksArea.setPrefRowCount(3);
+
+        grid.add(new Label("Current Stock:"), 0, 0);
+        grid.add(new Label(String.valueOf(selected.getStock())), 1, 0);
+        grid.add(new Label("Adjustment:"), 0, 1);
+        grid.add(qtyField, 1, 1);
+        grid.add(new Label("Remarks:"), 0, 2);
+        grid.add(remarksArea, 1, 2);
+
+        dialog.getDialogPane().setContent(grid);
+
+        dialog.showAndWait().ifPresent(response -> {
+            if (response == okButton) {
+                try {
+                    int adjustment = Integer.parseInt(qtyField.getText());
+                    String remarks = remarksArea.getText();
+                    
+                    boolean success = inventoryService.adjustStock(
+                        selected.getProductId(), adjustment, remarks
+                    );
+                    
+                    if (success) {
+                        showInfo("Success", "Stock adjusted successfully");
+                        loadInventory();
+                        loadRecentHistory();
+                    } else {
+                        showError("Error", "Failed to adjust stock");
+                    }
+                } catch (NumberFormatException e) {
+                    showWarning("Invalid Input", "Please enter a valid number");
+                } catch (IllegalArgumentException e) {
+                    showWarning("Error", e.getMessage());
+                }
+            }
+        });
     }
 
     @FXML
-    private void onAdd() {
+    private void handleRecordPurchase() {
+        Product selected = inventoryTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            showWarning("No Selection", "Please select a product to record purchase");
+            return;
+        }
 
-        inventoryList.add(
-                new Item("P999", "New Item", "Category", 10, 0.0, "Supplier")
-        );
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Record Purchase");
+        dialog.setHeaderText("Record purchase for: " + selected.getProductName());
+
+        ButtonType okButton = new ButtonType("Record", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(okButton, ButtonType.CANCEL);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+
+        TextField qtyField = new TextField();
+        qtyField.setPromptText("Enter quantity");
+        TextArea remarksArea = new TextArea();
+        remarksArea.setPromptText("Remarks (supplier, invoice, etc.)");
+        remarksArea.setPrefRowCount(3);
+
+        grid.add(new Label("Current Stock:"), 0, 0);
+        grid.add(new Label(String.valueOf(selected.getStock())), 1, 0);
+        grid.add(new Label("Purchase Qty:"), 0, 1);
+        grid.add(qtyField, 1, 1);
+        grid.add(new Label("Remarks:"), 0, 2);
+        grid.add(remarksArea, 1, 2);
+
+        dialog.getDialogPane().setContent(grid);
+
+        dialog.showAndWait().ifPresent(response -> {
+            if (response == okButton) {
+                try {
+                    int quantity = Integer.parseInt(qtyField.getText());
+                    String remarks = remarksArea.getText();
+                    
+                    boolean success = inventoryService.recordPurchase(
+                        selected.getProductId(), quantity, remarks
+                    );
+                    
+                    if (success) {
+                        showInfo("Success", "Purchase recorded successfully");
+                        loadInventory();
+                        loadRecentHistory();
+                    } else {
+                        showError("Error", "Failed to record purchase");
+                    }
+                } catch (NumberFormatException e) {
+                    showWarning("Invalid Input", "Please enter a valid number");
+                } catch (IllegalArgumentException e) {
+                    showWarning("Error", e.getMessage());
+                }
+            }
+        });
     }
 
     @FXML
-    private void onEdit() {
-
-        Item selected = inventoryTable.getSelectionModel().getSelectedItem();
-
-        if (selected != null) {
-
-            selected.setName(
-                    selected.getName() + " (Edited)"
-            );
-
-            inventoryTable.refresh();
+    private void handleShowLowStock() {
+        try {
+            products.clear();
+            products.addAll(inventoryService.getLowStockProducts());
+            showInfo("Low Stock", "Showing " + products.size() + " low stock products");
+        } catch (Exception e) {
+            showError("Error", e.getMessage());
         }
     }
 
-    @FXML
-    private void onDelete() {
-
-        Item selected = inventoryTable.getSelectionModel().getSelectedItem();
-
-        if (selected != null) {
-            inventoryList.remove(selected);
-        }
+    private void showInfo(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
-    public static class Item {
+    private void showWarning(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 
-        private final javafx.beans.property.SimpleStringProperty id;
-        private final javafx.beans.property.SimpleStringProperty name;
-        private final javafx.beans.property.SimpleStringProperty category;
-        private final javafx.beans.property.SimpleIntegerProperty stock;
-        private final javafx.beans.property.SimpleDoubleProperty price;
-        private final javafx.beans.property.SimpleStringProperty supplier;
-
-        public Item(
-                String id,
-                String name,
-                String category,
-                int stock,
-                double price,
-                String supplier
-        ) {
-            this.id = new javafx.beans.property.SimpleStringProperty(id);
-            this.name = new javafx.beans.property.SimpleStringProperty(name);
-            this.category = new javafx.beans.property.SimpleStringProperty(category);
-            this.stock = new javafx.beans.property.SimpleIntegerProperty(stock);
-            this.price = new javafx.beans.property.SimpleDoubleProperty(price);
-            this.supplier = new javafx.beans.property.SimpleStringProperty(supplier);
-        }
-
-        // Properties
-
-        public javafx.beans.property.SimpleStringProperty idProperty() {
-            return id;
-        }
-
-        public javafx.beans.property.SimpleStringProperty nameProperty() {
-            return name;
-        }
-
-        public javafx.beans.property.SimpleStringProperty categoryProperty() {
-            return category;
-        }
-
-        public javafx.beans.property.SimpleIntegerProperty stockProperty() {
-            return stock;
-        }
-
-        public javafx.beans.property.SimpleDoubleProperty priceProperty() {
-            return price;
-        }
-
-        public javafx.beans.property.SimpleStringProperty supplierProperty() {
-            return supplier;
-        }
-
-        // Getters
-
-        public String getId() {
-            return id.get();
-        }
-
-        public String getName() {
-            return name.get();
-        }
-
-        public String getCategory() {
-            return category.get();
-        }
-
-        public int getStock() {
-            return stock.get();
-        }
-
-        public double getPrice() {
-            return price.get();
-        }
-
-        public String getSupplier() {
-            return supplier.get();
-        }
-
-        // Setters
-
-        public void setId(String id) {
-            this.id.set(id);
-        }
-
-        public void setName(String name) {
-            this.name.set(name);
-        }
-
-        public void setCategory(String category) {
-            this.category.set(category);
-        }
-
-        public void setStock(int stock) {
-            this.stock.set(stock);
-        }
-
-        public void setPrice(double price) {
-            this.price.set(price);
-        }
-
-        public void setSupplier(String supplier) {
-            this.supplier.set(supplier);
-        }
+    private void showError(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

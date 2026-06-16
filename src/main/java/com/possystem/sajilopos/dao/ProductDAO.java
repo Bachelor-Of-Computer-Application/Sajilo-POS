@@ -15,7 +15,7 @@ public class ProductDAO {
     public List<Product> getAllProducts(int companyId) {
         List<Product> products = new ArrayList<>();
         String sql = "SELECT product_id, company_id, product_name, price, stock, description, " +
-                     "active, created_at, updated_at FROM products WHERE company_id = ? AND active = 1";
+                     "active, created_at, updated_at, minimum_stock FROM products WHERE company_id = ? AND active = 1";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -33,7 +33,8 @@ public class ProductDAO {
                         rs.getString("description"),
                         rs.getBoolean("active"),
                         rs.getTimestamp("created_at"),
-                        rs.getTimestamp("updated_at")
+                        rs.getTimestamp("updated_at"),
+                        rs.getInt("minimum_stock")
                 ));
             }
         } catch (SQLException e) {
@@ -48,7 +49,7 @@ public class ProductDAO {
      */
     public Product getProductById(int productId) {
         String sql = "SELECT product_id, company_id, product_name, price, stock, description, " +
-                     "active, created_at, updated_at FROM products WHERE product_id = ?";
+                     "active, created_at, updated_at, minimum_stock FROM products WHERE product_id = ?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -66,7 +67,8 @@ public class ProductDAO {
                         rs.getString("description"),
                         rs.getBoolean("active"),
                         rs.getTimestamp("created_at"),
-                        rs.getTimestamp("updated_at")
+                        rs.getTimestamp("updated_at"),
+                        rs.getInt("minimum_stock")
                 );
             }
         } catch (SQLException e) {
@@ -172,7 +174,7 @@ public class ProductDAO {
     public List<Product> searchProductByName(String name, int companyId) {
         List<Product> products = new ArrayList<>();
         String sql = "SELECT product_id, company_id, product_name, price, stock, description, " +
-                     "active, created_at, updated_at FROM products " +
+                     "active, created_at, updated_at, minimum_stock FROM products " +
                      "WHERE product_name LIKE ? AND company_id = ? AND active = 1";
         
         try (Connection conn = DBConnection.getConnection();
@@ -192,7 +194,8 @@ public class ProductDAO {
                         rs.getString("description"),
                         rs.getBoolean("active"),
                         rs.getTimestamp("created_at"),
-                        rs.getTimestamp("updated_at")
+                        rs.getTimestamp("updated_at"),
+                        rs.getInt("minimum_stock")
                 ));
             }
         } catch (SQLException e) {
@@ -221,5 +224,77 @@ public class ProductDAO {
             e.printStackTrace();
         }
         return false;
+    }
+    
+    /**
+     * Get products with low stock (stock <= minimum_stock)
+     */
+    public List<Product> getLowStockProducts(int companyId) {
+        List<Product> products = new ArrayList<>();
+        String sql = "SELECT product_id, company_id, product_name, price, stock, description, " +
+                     "active, created_at, updated_at, minimum_stock FROM products " +
+                     "WHERE company_id = ? AND active = 1 AND stock <= minimum_stock AND stock > 0";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, companyId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                products.add(new Product(
+                        rs.getInt("product_id"),
+                        rs.getInt("company_id"),
+                        rs.getString("product_name"),
+                        rs.getDouble("price"),
+                        rs.getInt("stock"),
+                        rs.getString("description"),
+                        rs.getBoolean("active"),
+                        rs.getTimestamp("created_at"),
+                        rs.getTimestamp("updated_at"),
+                        rs.getInt("minimum_stock")
+                ));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error fetching low stock products: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return products;
+    }
+    
+    /**
+     * Get out of stock products
+     */
+    public List<Product> getOutOfStockProducts(int companyId) {
+        List<Product> products = new ArrayList<>();
+        String sql = "SELECT product_id, company_id, product_name, price, stock, description, " +
+                     "active, created_at, updated_at, minimum_stock FROM products " +
+                     "WHERE company_id = ? AND active = 1 AND stock <= 0";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, companyId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                products.add(new Product(
+                        rs.getInt("product_id"),
+                        rs.getInt("company_id"),
+                        rs.getString("product_name"),
+                        rs.getDouble("price"),
+                        rs.getInt("stock"),
+                        rs.getString("description"),
+                        rs.getBoolean("active"),
+                        rs.getTimestamp("created_at"),
+                        rs.getTimestamp("updated_at"),
+                        rs.getInt("minimum_stock")
+                ));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error fetching out of stock products: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return products;
     }
 }

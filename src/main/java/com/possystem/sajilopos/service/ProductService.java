@@ -58,7 +58,8 @@ public class ProductService {
             throw new IllegalArgumentException("Stock cannot be negative");
         }
 
-        Product product = new Product(companyId, productName.trim(), price, stock, description);
+        // Default minimum stock is 10
+        Product product = new Product(companyId, productName.trim(), price, stock, description, 10);
         return productDAO.addProduct(product);
     }
 
@@ -83,7 +84,7 @@ public class ProductService {
         }
 
         Product product = new Product(productId, companyId, productName.trim(), price, stock, 
-                                      description, true, null, null);
+                                      description, true, null, null, 10);
         return productDAO.updateProduct(product);
     }
 
