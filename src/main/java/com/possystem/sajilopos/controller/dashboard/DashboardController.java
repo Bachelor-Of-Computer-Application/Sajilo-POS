@@ -70,6 +70,11 @@ public class DashboardController {
     }
 
     @FXML
+    private void openPurchaseHistory() {
+        loadView("/fxml/purchases/purchaseHistory.fxml");
+    }
+
+    @FXML
     private void openSettings() {
         loadView("/fxml/settings/settings.fxml");
     }

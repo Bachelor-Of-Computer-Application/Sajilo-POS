@@ -52,6 +52,14 @@
                         prefWidth="200" prefHeight="40"
                         style="-fx-background-color: #1e293b; -fx-text-fill: white;"/>
 
+                <Button text="Purchase History" onAction="#openPurchaseHistory"
+                        prefWidth="200" prefHeight="40"
+                        style="-fx-background-color: #1e293b; -fx-text-fill: white;"/>
+
+                <Button text="Suppliers" onAction="#openSuppliers"
+                        prefWidth="200" prefHeight="40"
+                        style="-fx-background-color: #1e293b; -fx-text-fill: white;"/>
+
                 <Button text="Sales" onAction="#openSales"
                         prefWidth="200" prefHeight="40"
                         style="-fx-background-color: #1e293b; -fx-text-fill: white;"/>
