@@ -80,7 +80,7 @@ public class BillingService {
     }
 
     
-    public boolean processSale(double discount) {
+    public boolean processSale(double discount, Integer customerId) {
         if (currentItems.isEmpty()) {
             System.err.println("Cannot process empty bill.");
             return false;
@@ -96,9 +96,10 @@ public class BillingService {
             int companyId = sessionManager.getCurrentCompanyId();
             Sale sale = new Sale(companyId, new ArrayList<>(currentItems), discount, currentUser.getUserId());
 
-            boolean saved = saleDAO.saveSale(sale);
+            boolean saved = saleDAO.saveSale(sale, customerId);
 
             if (saved) {
+                // Update product stock
                 for (SaleItem item : currentItems) {
                     int newStock = item.getProduct().getStock() - item.getQuantity();
                     boolean updated = productDAO.updateStock(item.getProduct().getProductId(), newStock, companyId);
@@ -121,6 +122,11 @@ public class BillingService {
             e.printStackTrace();
             return false;
         }
+    }
+    
+    // Overload for backward compatibility - no customer
+    public boolean processSale(double discount) {
+        return processSale(discount, null);
     }
 
     

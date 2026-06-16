@@ -13,9 +13,9 @@ import java.sql.*;
 
 public class SaleDAO {
 
-    public boolean saveSale(Sale sale) {
-        String saleSql = "INSERT INTO sales (company_id, user_id, total_amount, discount, final_amount, sale_date) " +
-                "VALUES (?, ?, ?, ?, ?, ?)";
+    public boolean saveSale(Sale sale, Integer customerId) {
+        String saleSql = "INSERT INTO sales (company_id, user_id, customer_id, total_amount, discount, final_amount, sale_date) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?)";
         String itemSql = "INSERT INTO sale_items (sale_id, product_id, quantity, subtotal) " +
                 "VALUES (?, ?, ?, ?)";
 
@@ -30,10 +30,18 @@ public class SaleDAO {
             try (PreparedStatement saleStmt = conn.prepareStatement(saleSql, Statement.RETURN_GENERATED_KEYS)) {
                 saleStmt.setInt(1, sale.getCompanyId());
                 saleStmt.setInt(2, sale.getUserId());
-                saleStmt.setDouble(3, sale.getTotalAmount());
-                saleStmt.setDouble(4, sale.getDiscount());
-                saleStmt.setDouble(5, sale.getFinalAmount());
-                saleStmt.setTimestamp(6, Timestamp.valueOf(sale.getSaleDate()));
+                
+                // Set customer_id (can be null)
+                if (customerId != null) {
+                    saleStmt.setInt(3, customerId);
+                } else {
+                    saleStmt.setNull(3, Types.INTEGER);
+                }
+                
+                saleStmt.setDouble(4, sale.getTotalAmount());
+                saleStmt.setDouble(5, sale.getDiscount());
+                saleStmt.setDouble(6, sale.getFinalAmount());
+                saleStmt.setTimestamp(7, Timestamp.valueOf(sale.getSaleDate()));
                 saleStmt.executeUpdate();
 
                 try (ResultSet keys = saleStmt.getGeneratedKeys()) {
@@ -52,6 +60,13 @@ public class SaleDAO {
                         }
                         itemStmt.executeBatch();
                     }
+                    
+                    // Calculate and add loyalty points if customer is associated
+                    if (customerId != null) {
+                        int loyaltyPoints = calculateLoyaltyPoints(sale.getFinalAmount());
+                        addLoyaltyPointsToCustomer(conn, customerId, loyaltyPoints);
+                        System.out.println("Added " + loyaltyPoints + " loyalty points to customer " + customerId);
+                    }
                 }
             }
 
@@ -64,6 +79,31 @@ public class SaleDAO {
             e.printStackTrace();
         }
         return false;
+    }
+    
+    // Overload for backward compatibility
+    public boolean saveSale(Sale sale) {
+        return saveSale(sale, null);
+    }
+    
+    /**
+     * Calculate loyalty points based on purchase amount
+     * Rule: 1 point for every Rs. 100 spent
+     */
+    private int calculateLoyaltyPoints(double finalAmount) {
+        return (int) (finalAmount / 100);
+    }
+    
+    /**
+     * Add loyalty points to customer within the same transaction
+     */
+    private void addLoyaltyPointsToCustomer(Connection conn, int customerId, int points) throws SQLException {
+        String sql = "UPDATE customers SET loyalty_points = loyalty_points + ? WHERE customer_id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, points);
+            stmt.setInt(2, customerId);
+            stmt.executeUpdate();
+        }
     }
 
     public List<Sale> getSalesHistory() {
