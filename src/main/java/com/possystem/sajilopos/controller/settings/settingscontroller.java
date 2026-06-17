@@ -1,71 +1,116 @@
 package com.possystem.sajilopos.controller.settings;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 
 public class settingscontroller {
 
-    @FXML private TextField usernameField;
-    @FXML private PasswordField passwordField;
-    @FXML private ChoiceBox<String> themeChoice;
-    @FXML private CheckBox taxCheck;
-    @FXML private CheckBox discountCheck;
+    // Account Settings
+    @FXML
+    private TextField usernameField;
 
-    // 🔥 initialize UI values
+    @FXML
+    private PasswordField passwordField;
+
+    // User Management
+    @FXML
+    private TextField newUsernameField;
+
+    @FXML
+    private PasswordField newPasswordField;
+
+    @FXML
+    private ChoiceBox<String> roleChoice;
+
+    // System Settings
+    @FXML
+    private ChoiceBox<String> themeChoice;
+
+    @FXML
+    private CheckBox taxCheck;
+
+    @FXML
+    private CheckBox discountCheck;
+
     @FXML
     public void initialize() {
-        themeChoice.getItems().addAll("Light", "Dark", "System Default");
+
+        // Theme Options
+        themeChoice.getItems().addAll(
+                "Light",
+                "Dark",
+                "System Default"
+        );
+
         themeChoice.setValue("Light");
 
-        System.out.println("Settings loaded");
-    }
+        // User Roles
+        roleChoice.getItems().addAll(
+                "Admin",
+                "Manager",
+                "Cashier"
+        );
 
-    // ================= ACCOUNT =================
-    @FXML
-    private void updateAccount() {
-        System.out.println("Updating account...");
-        System.out.println("Username: " + usernameField.getText());
-    }
-
-    // ================= SYSTEM =================
-    @FXML
-    private void saveSystemSettings() {
-        System.out.println("Saving system settings...");
-        System.out.println("Theme: " + themeChoice.getValue());
-        System.out.println("Tax: " + taxCheck.isSelected());
-        System.out.println("Discount: " + discountCheck.isSelected());
-    }
-
-    // ================= SECURITY =================
-    @FXML
-    private void changePassword() {
-        System.out.println("Change password clicked");
+        roleChoice.setValue("Cashier");
     }
 
     @FXML
-    private void enable2FA() {
-        System.out.println("2FA enabled (mock)");
+    private void updateAccount(ActionEvent event) {
+
+    }
+    @FXML
+    private void createUser(ActionEvent event) {
+
+        String role = roleChoice.getValue();
+        String username = newUsernameField.getText();
+        String password = newPasswordField.getText();
+
+        System.out.println("Role: " + role);
+        System.out.println("Username: " + username);
+        System.out.println("Password: " + password);
+
+        // INSERT INTO users(role, username, password)
+
+        newUsernameField.clear();
+        newPasswordField.clear();
+        roleChoice.setValue("Cashier");
+    }
+    @FXML
+    private void saveSystemSettings(ActionEvent event) {
+
     }
 
-    // ================= BACKUP =================
     @FXML
-    private void backupDatabase() {
-        System.out.println("Database backup started...");
+    private void changePassword(ActionEvent event) {
+
     }
 
     @FXML
-    private void restoreDatabase() {
-        System.out.println("Database restore started...");
-    }
+    private void enable2FA(ActionEvent event) {
 
-    // ================= SYSTEM ACTIONS =================
-    @FXML
-    private void clearCache() {
-        System.out.println("Cache cleared");
     }
 
     @FXML
-    private void resetSystem() {
-        System.out.println("SYSTEM RESET WARNING");
+    private void backupDatabase(ActionEvent event) {
+
+    }
+
+    @FXML
+    private void restoreDatabase(ActionEvent event) {
+
+    }
+
+    @FXML
+    private void clearCache(ActionEvent event) {
+
+    }
+
+    @FXML
+    private void resetSystem(ActionEvent event) {
+
     }
 }

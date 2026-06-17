@@ -3,63 +3,92 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<ScrollPane xmlns="http://javafx.com/javafx/17"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.possystem.sajilopos.controller.settings.settingscontroller"
-            fitToWidth="true"
-            style="-fx-background: #f1f5f9;">
+<ScrollPane fitToWidth="true" style="-fx-background: #f1f5f9;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.possystem.sajilopos.controller.settings.settingscontroller">
 
     <content>
 
         <VBox spacing="20" style="-fx-padding: 20;">
 
             <!-- TITLE -->
-            <Label text="Settings"
-                   style="-fx-font-size: 28px; -fx-font-weight: bold;"/>
+            <Label style="-fx-font-size: 28px; -fx-font-weight: bold;" text="Settings" />
 
             <!-- ACCOUNT SECTION -->
             <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;">
-                <Label text="Account Settings" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
 
-                <TextField fx:id="usernameField" promptText="Username"/>
-                <PasswordField fx:id="passwordField" promptText="Password"/>
+                <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Account Settings" />
 
-                <Button text="Update Account" onAction="#updateAccount"/>
+                <TextField fx:id="usernameField" promptText="Username" />
+
+                <PasswordField fx:id="passwordField" promptText="Password" />
+
+                <Button onAction="#updateAccount" text="Update Account" />
+
             </VBox>
+
+            <!-- USER MANAGEMENT SECTION -->
+        <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;">
+            <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="User And Roles" />
+
+            <ChoiceBox fx:id="roleChoice"/>
+
+            <Label text="Username"/>
+
+            <TextField fx:id="newUsernameField"/>
+
+            <Label text="Password"/>
+
+            <PasswordField fx:id="newPasswordField"/>
+
+            <Button text="Create User"
+                    onAction="#createUser"/>
+        </VBox>
 
             <!-- SYSTEM SECTION -->
             <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;">
-                <Label text="System Settings" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
 
-                <ChoiceBox fx:id="themeChoice"/>
-                <CheckBox fx:id="taxCheck" text="Enable Tax"/>
-                <CheckBox fx:id="discountCheck" text="Enable Discount System"/>
+                <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="System Settings" />
 
-                <Button text="Save System Settings" onAction="#saveSystemSettings"/>
+                <ChoiceBox fx:id="themeChoice" />
+
+                <CheckBox fx:id="taxCheck" text="Enable Tax" />
+
+                <CheckBox fx:id="discountCheck" text="Enable Discount System" />
+
+                <Button onAction="#saveSystemSettings" text="Save System Settings" />
+
             </VBox>
 
             <!-- SECURITY SECTION -->
             <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;">
-                <Label text="Security" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
 
-                <Button text="Change Password" onAction="#changePassword"/>
-                <Button text="Enable 2FA" onAction="#enable2FA"/>
+                <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Security" />
+
+                <Button onAction="#changePassword" text="Change Password" />
+
+                <Button onAction="#enable2FA" text="Enable 2FA" />
+
             </VBox>
 
             <!-- BACKUP SECTION -->
             <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;">
-                <Label text="Backup Restore" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
 
-                <Button text="Backup Database" onAction="#backupDatabase"/>
-                <Button text="Restore Database" onAction="#restoreDatabase"/>
+                <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Backup Restore" />
+
+                <Button onAction="#backupDatabase" text="Backup Database" />
+
+                <Button onAction="#restoreDatabase" text="Restore Database" />
+
             </VBox>
 
             <!-- SYSTEM ACTIONS -->
             <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;">
-                <Label text="System Actions" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
 
-                <Button text="Clear Cache" onAction="#clearCache"/>
-                <Button text="Reset System" onAction="#resetSystem" style="-fx-background-color: #ef4444; -fx-text-fill: white;"/>
+                <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="System Actions" />
+
+                <Button onAction="#clearCache" text="Clear Cache" />
+
+                <Button onAction="#resetSystem" style="-fx-background-color: #ef4444; -fx-text-fill: white;" text="Reset System" />
+
             </VBox>
 
         </VBox>
