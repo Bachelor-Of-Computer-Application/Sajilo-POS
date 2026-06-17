@@ -16,10 +16,11 @@ public class BillingService {
     private final ProductDAO productDAO = new ProductDAO();
     private final SaleDAO saleDAO = new SaleDAO();
     private final SessionManager sessionManager = SessionManager.getInstance();
+    private final UserService userService = new UserService();
     private final List<SaleItem> currentItems = new ArrayList<>();
 
-   
     public String addItem(int productId, int quantity) {
+        userService.requireLogin();
         if (quantity <= 0) {
             return "Quantity must be greater than 0.";
         }
@@ -34,7 +35,6 @@ public class BillingService {
             return "Insufficient stock. Available: " + product.getStock();
         }
 
-        
         for (SaleItem item : currentItems) {
             if (item.getProduct().getProductId() == productId) {
                 int newQuantity = item.getQuantity() + quantity;
@@ -51,15 +51,14 @@ public class BillingService {
         return "Item added to bill.";
     }
 
-    
     public void removeItem(int index) {
+        userService.requireLogin();
         if (index >= 0 && index < currentItems.size()) {
             SaleItem removed = currentItems.remove(index);
             System.out.println("Item removed: " + removed.getProduct().getProductName());
         }
     }
 
-    
     public List<SaleItem> getCurrentItems() {
         return new ArrayList<>(currentItems);
     }
@@ -68,19 +67,17 @@ public class BillingService {
         return currentItems.stream().mapToDouble(SaleItem::getSubtotal).sum();
     }
 
-    
     public int getItemCount() {
         return currentItems.size();
     }
 
-   
     public double getFinalAmount(double discount) {
         double total = getTotal();
-        return Math.max(0, total - discount); // Discount cannot make total negative
+        return Math.max(0, total - discount);
     }
 
-    
     public boolean processSale(double discount, Integer customerId) {
+        userService.requireLogin();
         if (currentItems.isEmpty()) {
             System.err.println("Cannot process empty bill.");
             return false;
@@ -99,18 +96,15 @@ public class BillingService {
             boolean saved = saleDAO.saveSale(sale, customerId);
 
             if (saved) {
-                // Update product stock
                 for (SaleItem item : currentItems) {
                     int newStock = item.getProduct().getStock() - item.getQuantity();
                     boolean updated = productDAO.updateStock(item.getProduct().getProductId(), newStock, companyId);
                     if (!updated) {
-                        System.err
-                                .println("Warning: Failed to update stock for product: " + item.getProduct().getProductName());
+                        System.err.println("Warning: Failed to update stock for product: " + item.getProduct().getProductName());
                     }
                 }
-
                 System.out.println("Sale processed successfully by " + currentUser.getUsername());
-                currentItems.clear(); 
+                currentItems.clear();
                 return true;
             } else {
                 System.err.println("Failed to save sale to database.");
@@ -123,13 +117,11 @@ public class BillingService {
             return false;
         }
     }
-    
-    // Overload for backward compatibility - no customer
+
     public boolean processSale(double discount) {
         return processSale(discount, null);
     }
 
-    
     public void clearBill() {
         if (!currentItems.isEmpty()) {
             System.out.println("Bill cleared. " + currentItems.size() + " items discarded.");
@@ -137,7 +129,6 @@ public class BillingService {
         currentItems.clear();
     }
 
-    
     public String getBillSummary() {
         StringBuilder sb = new StringBuilder();
         sb.append("========== BILL SUMMARY ==========\n");
