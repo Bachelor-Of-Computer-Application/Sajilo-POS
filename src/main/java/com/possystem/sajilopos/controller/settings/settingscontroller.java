@@ -1,116 +1,93 @@
 package com.possystem.sajilopos.controller.settings;
 
+import com.possystem.sajilopos.service.UserService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
 public class settingscontroller {
 
-    // Account Settings
-    @FXML
-    private TextField usernameField;
+    @FXML private TextField usernameField;
+    @FXML private PasswordField passwordField;
+    @FXML private TextField newUsernameField;
+    @FXML private PasswordField newPasswordField;
+    @FXML private ChoiceBox<String> roleChoice;
+    @FXML private ChoiceBox<String> themeChoice;
+    @FXML private CheckBox taxCheck;
+    @FXML private CheckBox discountCheck;
+    @FXML private Label statusLabel;
 
-    @FXML
-    private PasswordField passwordField;
-
-    // User Management
-    @FXML
-    private TextField newUsernameField;
-
-    @FXML
-    private PasswordField newPasswordField;
-
-    @FXML
-    private ChoiceBox<String> roleChoice;
-
-    // System Settings
-    @FXML
-    private ChoiceBox<String> themeChoice;
-
-    @FXML
-    private CheckBox taxCheck;
-
-    @FXML
-    private CheckBox discountCheck;
+    private final UserService userService = new UserService();
 
     @FXML
     public void initialize() {
-
-        // Theme Options
-        themeChoice.getItems().addAll(
-                "Light",
-                "Dark",
-                "System Default"
-        );
-
+        themeChoice.getItems().addAll("Light", "Dark", "System Default");
         themeChoice.setValue("Light");
 
-        // User Roles
-        roleChoice.getItems().addAll(
-                "Admin",
-                "Manager",
-                "Cashier"
-        );
-
-        roleChoice.setValue("Cashier");
+        roleChoice.getItems().addAll("ADMIN", "MANAGER", "CASHIER");
+        roleChoice.setValue("CASHIER");
     }
 
-    @FXML
-    private void updateAccount(ActionEvent event) {
-
-    }
     @FXML
     private void createUser(ActionEvent event) {
-
         String role = roleChoice.getValue();
-        String username = newUsernameField.getText();
+        String username = newUsernameField.getText().trim();
         String password = newPasswordField.getText();
 
-        System.out.println("Role: " + role);
-        System.out.println("Username: " + username);
-        System.out.println("Password: " + password);
+        if (username.isEmpty() || password.isEmpty()) {
+            showStatus("Username and password cannot be empty.", true);
+            return;
+        }
 
-        // INSERT INTO users(role, username, password)
-
-        newUsernameField.clear();
-        newPasswordField.clear();
-        roleChoice.setValue("Cashier");
-    }
-    @FXML
-    private void saveSystemSettings(ActionEvent event) {
-
-    }
-
-    @FXML
-    private void changePassword(ActionEvent event) {
-
-    }
-
-    @FXML
-    private void enable2FA(ActionEvent event) {
-
+        try {
+            boolean success = userService.createUser(username, password, role);
+            if (success) {
+                showStatus("User '" + username + "' created successfully as " + role, false);
+                newUsernameField.clear();
+                newPasswordField.clear();
+                roleChoice.setValue("CASHIER");
+            } else {
+                showStatus("Failed to create user.", true);
+            }
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            showStatus("Error: " + e.getMessage(), true);
+        }
     }
 
     @FXML
-    private void backupDatabase(ActionEvent event) {
-
-    }
+    private void updateAccount(ActionEvent event) {}
 
     @FXML
-    private void restoreDatabase(ActionEvent event) {
-
-    }
+    private void saveSystemSettings(ActionEvent event) {}
 
     @FXML
-    private void clearCache(ActionEvent event) {
-
-    }
+    private void changePassword(ActionEvent event) {}
 
     @FXML
-    private void resetSystem(ActionEvent event) {
+    private void enable2FA(ActionEvent event) {}
 
+    @FXML
+    private void backupDatabase(ActionEvent event) {}
+
+    @FXML
+    private void restoreDatabase(ActionEvent event) {}
+
+    @FXML
+    private void clearCache(ActionEvent event) {}
+
+    @FXML
+    private void resetSystem(ActionEvent event) {}
+
+    private void showStatus(String message, boolean isError) {
+        if (statusLabel != null) {
+            statusLabel.setText(message);
+            statusLabel.setStyle(isError ? "-fx-text-fill: red;" : "-fx-text-fill: green;");
+        } else {
+            System.out.println(message);
+        }
     }
 }

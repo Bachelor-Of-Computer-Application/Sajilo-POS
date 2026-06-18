@@ -9,7 +9,6 @@
 <BorderPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.possystem.sajilopos.controller.dashboard.DashboardController"
-            fx:id="rootPane"
             prefWidth="1200.0"
             prefHeight="700.0">
 
@@ -36,7 +35,7 @@
                         prefWidth="200" prefHeight="40"
                         style="-fx-background-color: #1e293b; -fx-text-fill: white;"/>
 
-                <Button text="Products" onAction="#openProducts"
+                <Button text="Sales" onAction="#openSales"
                         prefWidth="200" prefHeight="40"
                         style="-fx-background-color: #1e293b; -fx-text-fill: white;"/>
 
@@ -44,11 +43,15 @@
                         prefWidth="200" prefHeight="40"
                         style="-fx-background-color: #1e293b; -fx-text-fill: white;"/>
 
-                <Button text="Inventory" onAction="#openInventory"
+                <Button fx:id="productsMenu" text="Products" onAction="#openProducts"
                         prefWidth="200" prefHeight="40"
                         style="-fx-background-color: #1e293b; -fx-text-fill: white;"/>
 
-                <Button text="Purchases" onAction="#openPurchases"
+                <Button fx:id="inventoryMenu" text="Inventory" onAction="#openInventory"
+                        prefWidth="200" prefHeight="40"
+                        style="-fx-background-color: #1e293b; -fx-text-fill: white;"/>
+
+                <Button fx:id="purchasesMenu" text="Purchases" onAction="#openPurchases"
                         prefWidth="200" prefHeight="40"
                         style="-fx-background-color: #1e293b; -fx-text-fill: white;"/>
 
@@ -56,23 +59,19 @@
                         prefWidth="200" prefHeight="40"
                         style="-fx-background-color: #1e293b; -fx-text-fill: white;"/>
 
-                <Button text="Suppliers" onAction="#openSuppliers"
+                <Button fx:id="suppliersMenu" text="Suppliers" onAction="#openSuppliers"
                         prefWidth="200" prefHeight="40"
                         style="-fx-background-color: #1e293b; -fx-text-fill: white;"/>
 
-                <Button text="Sales" onAction="#openSales"
+                <Button fx:id="reportsMenu" text="Reports" onAction="#openReports"
                         prefWidth="200" prefHeight="40"
                         style="-fx-background-color: #1e293b; -fx-text-fill: white;"/>
 
-                <Button text="Reports" onAction="#openReports"
+                <Button fx:id="usersMenu" text="Users" onAction="#openUsers"
                         prefWidth="200" prefHeight="40"
                         style="-fx-background-color: #1e293b; -fx-text-fill: white;"/>
 
-                <Button text="Users" onAction="#openUsers"
-                        prefWidth="200" prefHeight="40"
-                        style="-fx-background-color: #1e293b; -fx-text-fill: white;"/>
-
-                <Button text="Settings" onAction="#openSettings"
+                <Button fx:id="settingsMenu" text="Settings" onAction="#openSettings"
                         prefWidth="200" prefHeight="40"
                         style="-fx-background-color: #1e293b; -fx-text-fill: white;"/>
 
@@ -84,7 +83,6 @@
     <top>
         <HBox prefHeight="70"
               style="-fx-background-color: white; -fx-border-color: #e2e8f0;">
-
             <children>
                 <Label text="Dashboard Overview"
                        style="-fx-font-size: 26px; -fx-font-weight: bold;">
@@ -98,131 +96,7 @@
 
     <!-- CENTER CONTENT -->
     <center>
-        <AnchorPane style="-fx-background-color: #f1f5f9;">
-
-            <children>
-
-                <!-- CARD 1 -->
-                <VBox layoutX="40" layoutY="40"
-                      prefWidth="220" prefHeight="120"
-                      style="-fx-background-color: white; -fx-background-radius: 15;">
-
-                    <children>
-                        <Label text="Total Sales"
-                               style="-fx-font-size: 14px;">
-                            <VBox.margin>
-                                <Insets top="20" left="20"/>
-                            </VBox.margin>
-                        </Label>
-
-                        <Label text="Rs. 125000"
-                               style="-fx-font-size: 28px; -fx-font-weight: bold;">
-                            <VBox.margin>
-                                <Insets top="10" left="20"/>
-                            </VBox.margin>
-                        </Label>
-                    </children>
-                </VBox>
-
-                <!-- CARD 2 -->
-                <VBox layoutX="300" layoutY="40"
-                      prefWidth="220" prefHeight="120"
-                      style="-fx-background-color: white; -fx-background-radius: 15;">
-
-                    <children>
-                        <Label text="Products">
-                            <VBox.margin>
-                                <Insets top="20" left="20"/>
-                            </VBox.margin>
-                        </Label>
-
-                        <Label text="245"
-                               style="-fx-font-size: 28px; -fx-font-weight: bold;">
-                            <VBox.margin>
-                                <Insets top="10" left="20"/>
-                            </VBox.margin>
-                        </Label>
-                    </children>
-                </VBox>
-
-                <!-- CARD 3 -->
-                <VBox layoutX="560" layoutY="40"
-                      prefWidth="220" prefHeight="120"
-                      style="-fx-background-color: white; -fx-background-radius: 15;">
-
-                    <children>
-                        <Label text="Customers">
-                            <VBox.margin>
-                                <Insets top="20" left="20"/>
-                            </VBox.margin>
-                        </Label>
-
-                        <Label text="95"
-                               style="-fx-font-size: 28px; -fx-font-weight: bold;">
-                            <VBox.margin>
-                                <Insets top="10" left="20"/>
-                            </VBox.margin>
-                        </Label>
-                    </children>
-                </VBox>
-
-                <!-- RECENT SALES -->
-                <VBox layoutX="40" layoutY="210"
-                      prefWidth="740" prefHeight="300"
-                      style="-fx-background-color: white; -fx-background-radius: 15;">
-
-                    <children>
-                        <Label text="Recent Sales"
-                               style="-fx-font-size: 20px; -fx-font-weight: bold;">
-                            <VBox.margin>
-                                <Insets top="20" left="20"/>
-                            </VBox.margin>
-                        </Label>
-
-                        <Label text="Invoice #1001 - Rs. 4500">
-                            <VBox.margin>
-                                <Insets top="20" left="20"/>
-                            </VBox.margin>
-                        </Label>
-
-                        <Label text="Invoice #1002 - Rs. 7200">
-                            <VBox.margin>
-                                <Insets top="10" left="20"/>
-                            </VBox.margin>
-                        </Label>
-
-                        <Label text="Invoice #1003 - Rs. 1500">
-                            <VBox.margin>
-                                <Insets top="10" left="20"/>
-                            </VBox.margin>
-                        </Label>
-
-                    </children>
-                </VBox>
-
-                <!-- QUICK ACTIONS -->
-                <VBox layoutX="820" layoutY="210"
-                      prefWidth="250" prefHeight="300"
-                      spacing="15"
-                      style="-fx-background-color: white; -fx-background-radius: 15;">
-
-                    <padding>
-                        <Insets top="20" right="20" bottom="20" left="20"/>
-                    </padding>
-
-                    <children>
-                        <Label text="Quick Actions"
-                               style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
-
-                        <Button text="Add Product"/>
-                        <Button text="Create Sale"/>
-                        <Button text="Generate Report"/>
-                    </children>
-
-                </VBox>
-
-            </children>
-        </AnchorPane>
+        <BorderPane fx:id="rootPane" style="-fx-background-color: #f1f5f9;"/>
     </center>
 
 </BorderPane>
