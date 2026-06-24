@@ -31,9 +31,16 @@ public class DashboardController {
         User currentUser = session.getCurrentUser();
         
         if (currentUser != null) {
-            roleLabel.setText("Logged in as: " + currentUser.getRole());
-            companyNameLabel.setText("Company: " + (currentUser.getCompanyId() > 0 ? currentUser.getCompanyId() : "N/A"));
-            sidebarCompanyLabel.setText("Company: " + (currentUser.getCompanyId() > 0 ? currentUser.getCompanyId() : "N/A"));
+            String username = currentUser.getUsername() != null ? currentUser.getUsername() : "Unknown";
+            String role = currentUser.getRole() != null ? currentUser.getRole() : "CASHIER";
+            roleLabel.setText("User: " + username + " | Role: " + role);
+            String companyDisplay = "Company ID: " + currentUser.getCompanyId();
+            companyNameLabel.setText(companyDisplay);
+            sidebarCompanyLabel.setText(companyDisplay);
+        } else {
+            roleLabel.setText("Not logged in");
+            companyNameLabel.setText("Company ID: N/A");
+            sidebarCompanyLabel.setText("Company ID: N/A");
         }
         
         // Apply role-based permissions
