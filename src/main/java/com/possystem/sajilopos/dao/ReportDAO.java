@@ -11,7 +11,7 @@ public class ReportDAO {
 
     
     public double getTotalSales(LocalDate from, LocalDate to) {
-        String sql = "SELECT SUM(final_amount) FROM sales WHERE CAST(sale_date AS DATE) BETWEEN ? AND ?";
+        String sql = "SELECT SUM(final_amount) FROM sales WHERE DATE(sale_date) BETWEEN ? AND ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setDate(1, Date.valueOf(from));
@@ -26,7 +26,7 @@ public class ReportDAO {
 
     
     public int getTotalTransactions(LocalDate from, LocalDate to) {
-        String sql = "SELECT COUNT(*) FROM sales WHERE CAST(sale_date AS DATE) BETWEEN ? AND ?";
+        String sql = "SELECT COUNT(*) FROM sales WHERE DATE(sale_date) BETWEEN ? AND ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setDate(1, Date.valueOf(from));
@@ -41,17 +41,17 @@ public class ReportDAO {
 
     public Map<String, Integer> getTopSellingProducts(LocalDate from, LocalDate to, int limit) {
         Map<String, Integer> result = new LinkedHashMap<>();
-        String sql = "SELECT TOP (?) p.product_name, SUM(si.quantity) AS total_qty " +
+        String sql = "SELECT p.product_name, SUM(si.quantity) AS total_qty " +
                      "FROM sale_items si " +
                      "JOIN products p ON si.product_id = p.product_id " +
-                     "JOIN sales s ON si.sale_id = s.id " +
-                     "WHERE CAST(s.sale_date AS DATE) BETWEEN ? AND ? " +
-                     "GROUP BY p.product_name ORDER BY total_qty DESC";
+                     "JOIN sales s ON si.sale_id = s.sale_id " +
+                     "WHERE DATE(s.sale_date) BETWEEN ? AND ? " +
+                     "GROUP BY p.product_name ORDER BY total_qty DESC LIMIT ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, limit);
-            stmt.setDate(2, Date.valueOf(from));
-            stmt.setDate(3, Date.valueOf(to));
+            stmt.setDate(1, Date.valueOf(from));
+            stmt.setDate(2, Date.valueOf(to));
+            stmt.setInt(3, limit);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 result.put(rs.getString("product_name"), rs.getInt("total_qty"));
@@ -64,9 +64,9 @@ public class ReportDAO {
 
     public Map<String, Double> getDailySalesSummary(LocalDate from, LocalDate to) {
         Map<String, Double> result = new LinkedHashMap<>();
-        String sql = "SELECT CAST(sale_date AS DATE) AS sale_day, SUM(final_amount) AS daily_total " +
-                     "FROM sales WHERE CAST(sale_date AS DATE) BETWEEN ? AND ? " +
-                     "GROUP BY CAST(sale_date AS DATE) ORDER BY sale_day";
+        String sql = "SELECT DATE(sale_date) AS sale_day, SUM(final_amount) AS daily_total " +
+                     "FROM sales WHERE DATE(sale_date) BETWEEN ? AND ? " +
+                     "GROUP BY DATE(sale_date) ORDER BY sale_day";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setDate(1, Date.valueOf(from));

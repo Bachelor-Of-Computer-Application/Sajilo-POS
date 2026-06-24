@@ -5,7 +5,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.possystem.sajilopos.controller.users.userscontroller"
+            fx:controller="com.possystem.sajilopos.controller.users.UsersController"
             style="-fx-background-color: #f4f6f9;">
 
     <top>

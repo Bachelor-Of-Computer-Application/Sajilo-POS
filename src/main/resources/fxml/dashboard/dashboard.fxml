@@ -13,79 +13,110 @@
 
     <!-- SIDEBAR -->
     <left>
-        <VBox spacing="12"
+        <VBox spacing="8"
               prefWidth="240"
               style="-fx-background-color:#0f172a;">
 
             <padding>
-                <Insets top="20" right="15" bottom="20" left="15"/>
+                <Insets top="24" right="15" bottom="20" left="15"/>
             </padding>
 
             <children>
 
                 <Label text="SAJILO POS"
-                       style="-fx-font-size:24;
+                       style="-fx-font-size:22;
                               -fx-font-weight:bold;
                               -fx-text-fill:white;"/>
 
                 <Label fx:id="sidebarCompanyLabel"
                        text="Company Name"
-                       style="-fx-text-fill:#cbd5e1;
-                              -fx-font-size:12;"/>
+                       style="-fx-text-fill:#94a3b8;
+                              -fx-font-size:11;"/>
 
-                <Separator/>
+                <Separator style="-fx-background-color:#1e293b;"/>
 
                 <Button fx:id="dashboardMenu"
                         text="Dashboard"
                         onAction="#openDashboard"
-                        prefHeight="40"
-                        maxWidth="Infinity"/>
+                        prefHeight="38"
+                        maxWidth="Infinity"
+                        style="-fx-background-color:#1e293b; -fx-text-fill:white; -fx-font-size:13; -fx-alignment:CENTER-LEFT; -fx-background-radius:6; -fx-cursor:hand;"/>
 
-                <Button text="Products" onAction="#openProducts"
-                        prefWidth="200" prefHeight="40"
-                        style="-fx-background-color: #1e293b; -fx-text-fill: white;"/>
+                <Button text="Products"
+                        onAction="#openProducts"
+                        prefHeight="38"
+                        maxWidth="Infinity"
+                        style="-fx-background-color:#1e293b; -fx-text-fill:white; -fx-font-size:13; -fx-alignment:CENTER-LEFT; -fx-background-radius:6; -fx-cursor:hand;"/>
 
                 <Button fx:id="customersMenu"
                         text="Customers"
                         onAction="#openCustomers"
-                        prefHeight="40"
-                        maxWidth="Infinity"/>
+                        prefHeight="38"
+                        maxWidth="Infinity"
+                        style="-fx-background-color:#1e293b; -fx-text-fill:white; -fx-font-size:13; -fx-alignment:CENTER-LEFT; -fx-background-radius:6; -fx-cursor:hand;"/>
 
-                <Button text="Inventory" onAction="#openInventory"
-                        prefWidth="200" prefHeight="40"
-                        style="-fx-background-color: #1e293b; -fx-text-fill: white;"/>
+                <Button fx:id="inventoryMenu"
+                        text="Inventory"
+                        onAction="#openInventory"
+                        prefHeight="38"
+                        maxWidth="Infinity"
+                        style="-fx-background-color:#1e293b; -fx-text-fill:white; -fx-font-size:13; -fx-alignment:CENTER-LEFT; -fx-background-radius:6; -fx-cursor:hand;"/>
 
-                <Button text="Purchases" onAction="#openPurchases"
-                        prefWidth="200" prefHeight="40"
-                        style="-fx-background-color: #1e293b; -fx-text-fill: white;"/>
+                <Button fx:id="purchasesMenu"
+                        text="Purchases"
+                        onAction="#openPurchases"
+                        prefHeight="38"
+                        maxWidth="Infinity"
+                        style="-fx-background-color:#1e293b; -fx-text-fill:white; -fx-font-size:13; -fx-alignment:CENTER-LEFT; -fx-background-radius:6; -fx-cursor:hand;"/>
 
                 <Button fx:id="purchaseHistoryMenu"
                         text="Purchase History"
                         onAction="#openPurchaseHistory"
-                        prefHeight="40"
-                        maxWidth="Infinity"/>
+                        prefHeight="38"
+                        maxWidth="Infinity"
+                        style="-fx-background-color:#1e293b; -fx-text-fill:white; -fx-font-size:13; -fx-alignment:CENTER-LEFT; -fx-background-radius:6; -fx-cursor:hand;"/>
 
-                <Button text="Suppliers" onAction="#openSuppliers"
-                        prefWidth="200" prefHeight="40"
-                        style="-fx-background-color: #1e293b; -fx-text-fill: white;"/>
+                <Button fx:id="suppliersMenu"
+                        text="Suppliers"
+                        onAction="#openSuppliers"
+                        prefHeight="38"
+                        maxWidth="Infinity"
+                        style="-fx-background-color:#1e293b; -fx-text-fill:white; -fx-font-size:13; -fx-alignment:CENTER-LEFT; -fx-background-radius:6; -fx-cursor:hand;"/>
 
-                <Button text="Sales" onAction="#openSales"
-                        prefWidth="200" prefHeight="40"
-                        style="-fx-background-color: #1e293b; -fx-text-fill: white;"/>
+                <Button text="Sales"
+                        onAction="#openSales"
+                        prefHeight="38"
+                        maxWidth="Infinity"
+                        style="-fx-background-color:#1e293b; -fx-text-fill:white; -fx-font-size:13; -fx-alignment:CENTER-LEFT; -fx-background-radius:6; -fx-cursor:hand;"/>
 
-                <Button text="Reports" onAction="#openReports"
-                        prefWidth="200" prefHeight="40"
-                        style="-fx-background-color: #1e293b; -fx-text-fill: white;"/>
+                <Button fx:id="reportsMenu"
+                        text="Reports"
+                        onAction="#openReports"
+                        prefHeight="38"
+                        maxWidth="Infinity"
+                        style="-fx-background-color:#1e293b; -fx-text-fill:white; -fx-font-size:13; -fx-alignment:CENTER-LEFT; -fx-background-radius:6; -fx-cursor:hand;"/>
 
                 <Button fx:id="usersMenu"
-                        text="Users" onAction="#openUsers"
-                        prefWidth="200" prefHeight="40"
-                        style="-fx-background-color: #1e293b; -fx-text-fill: white;"/>
+                        text="Users"
+                        onAction="#openUsers"
+                        prefHeight="38"
+                        maxWidth="Infinity"
+                        style="-fx-background-color:#1e293b; -fx-text-fill:white; -fx-font-size:13; -fx-alignment:CENTER-LEFT; -fx-background-radius:6; -fx-cursor:hand;"/>
 
                 <Button fx:id="settingsMenu"
-                        text="Settings" onAction="#openSettings"
-                        prefWidth="200" prefHeight="40"
-                        style="-fx-background-color: #1e293b; -fx-text-fill: white;"/>
+                        text="Settings"
+                        onAction="#openSettings"
+                        prefHeight="38"
+                        maxWidth="Infinity"
+                        style="-fx-background-color:#1e293b; -fx-text-fill:white; -fx-font-size:13; -fx-alignment:CENTER-LEFT; -fx-background-radius:6; -fx-cursor:hand;"/>
+
+                <Separator style="-fx-background-color:#1e293b;"/>
+
+                <Button text="Logout"
+                        onAction="#handleLogout"
+                        prefHeight="38"
+                        maxWidth="Infinity"
+                        style="-fx-background-color:#dc2626; -fx-text-fill:white; -fx-font-size:13; -fx-font-weight:bold; -fx-alignment:CENTER-LEFT; -fx-background-radius:6; -fx-cursor:hand;"/>
 
             </children>
         </VBox>
@@ -93,24 +124,38 @@
 
     <!-- TOP HEADER -->
     <top>
-        <HBox prefHeight="70"
-              style="-fx-background-color: white; -fx-border-color: #e2e8f0;">
+        <HBox prefHeight="64"
+              alignment="CENTER_LEFT"
+              spacing="12"
+              style="-fx-background-color: white;
+                     -fx-border-color: #e2e8f0;
+                     -fx-border-width: 0 0 1 0;
+                     -fx-padding: 0 24 0 24;">
 
             <children>
 
                 <Label text="SAJILO POS"
-                       style="-fx-font-size:22;
-                              -fx-font-weight:bold;"/>
+                       style="-fx-font-size:20;
+                              -fx-font-weight:bold;
+                              -fx-text-fill:#0f172a;"/>
+
+                <Label text="|"
+                       style="-fx-font-size:18; -fx-text-fill:#cbd5e1;"/>
 
                 <Label fx:id="companyNameLabel"
                        text="Company Name"
-                       style="-fx-font-size:18;
-                              -fx-font-weight:bold;"/>
+                       style="-fx-font-size:14;
+                              -fx-text-fill:#475569;"/>
+
+                <HBox HBox.hgrow="ALWAYS"/>
 
                 <Label fx:id="roleLabel"
                        text="Logged in as: ADMIN"
-                       style="-fx-font-size:14;
-                              -fx-text-fill:#64748b;"/>
+                       style="-fx-font-size:13;
+                              -fx-text-fill:#64748b;
+                              -fx-background-color:#f1f5f9;
+                              -fx-background-radius:20;
+                              -fx-padding: 5 14 5 14;"/>
 
             </children>
 

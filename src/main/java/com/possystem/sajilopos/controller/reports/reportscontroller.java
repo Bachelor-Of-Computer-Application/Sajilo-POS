@@ -1,23 +1,27 @@
 package com.possystem.sajilopos.controller.reports;
 
+import com.possystem.sajilopos.service.ReportService;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
-import java.util.stream.Collectors;
+import java.time.LocalDate;
+import java.util.Map;
 
 public class reportscontroller {
 
     @FXML private TextField searchField;
-    @FXML private TableView<Report> reportsTable;
+    @FXML private TableView<ReportRow> reportsTable;
 
-    @FXML private TableColumn<Report, String> colDate;
-    @FXML private TableColumn<Report, Double> colSales;
-    @FXML private TableColumn<Report, Integer> colItems;
-    @FXML private TableColumn<Report, Double> colProfit;
+    @FXML private TableColumn<ReportRow, String> colDate;
+    @FXML private TableColumn<ReportRow, Double> colSales;
+    @FXML private TableColumn<ReportRow, Integer> colItems;
+    @FXML private TableColumn<ReportRow, Double> colProfit;
 
-    private final ObservableList<Report> reportList = FXCollections.observableArrayList();
+    private final ObservableList<ReportRow> reportList = FXCollections.observableArrayList();
+    private final ReportService reportService = new ReportService();
 
     @FXML
     public void initialize() {
@@ -26,64 +30,115 @@ public class reportscontroller {
         colItems.setCellValueFactory(data -> data.getValue().itemsProperty().asObject());
         colProfit.setCellValueFactory(data -> data.getValue().profitProperty().asObject());
 
-        loadMockData();
         reportsTable.setItems(reportList);
+        loadLast30Days();
     }
 
-    private void loadMockData() {
-        reportList.addAll(
-                new Report("2026-06-01", 50000, 120, 12000),
-                new Report("2026-06-02", 42000, 98, 9000),
-                new Report("2026-06-03", 61000, 140, 15000),
-                new Report("2026-06-04", 39000, 85, 8000)
-        );
+    private void loadLast30Days() {
+        try {
+            LocalDate to = LocalDate.now();
+            LocalDate from = to.minusDays(29);
+            loadRange(from, to);
+        } catch (Exception e) {
+            System.err.println("Error loading report data: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void loadRange(LocalDate from, LocalDate to) {
+        reportList.clear();
+        try {
+            Map<String, Double> dailySales = reportService.getDailySalesSummary(from, to);
+            int totalTransactions = reportService.getTotalTransactions(from, to);
+            int days = dailySales.size() == 0 ? 1 : dailySales.size();
+
+            for (Map.Entry<String, Double> entry : dailySales.entrySet()) {
+                double sales = entry.getValue();
+                // Estimate items per day proportionally from total transactions
+                int items = totalTransactions / days;
+                // Rough profit estimate: 20% margin
+                double profit = sales * 0.20;
+                reportList.add(new ReportRow(entry.getKey(), sales, items, profit));
+            }
+
+            // If no daily data, show a summary row
+            if (reportList.isEmpty()) {
+                double totalSales = reportService.getTotalSales(from, to);
+                if (totalSales > 0) {
+                    reportList.add(new ReportRow(
+                        from + " to " + to,
+                        totalSales,
+                        totalTransactions,
+                        totalSales * 0.20
+                    ));
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error loading range report: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     @FXML
     private void onFilter() {
-        String keyword = searchField.getText().toLowerCase();
-
+        String keyword = searchField.getText().trim().toLowerCase();
         if (keyword.isEmpty()) {
-            reportsTable.setItems(reportList);
+            loadLast30Days();
             return;
         }
 
-        ObservableList<Report> filtered = FXCollections.observableArrayList(
-                reportList.stream()
-                        .filter(r -> r.getDate().toLowerCase().contains(keyword))
-                        .collect(Collectors.toList())
-        );
-
+        ObservableList<ReportRow> filtered = FXCollections.observableArrayList();
+        for (ReportRow row : reportList) {
+            if (row.getDate().toLowerCase().contains(keyword)) {
+                filtered.add(row);
+            }
+        }
         reportsTable.setItems(filtered);
     }
 
     @FXML
     private void onRefresh() {
+        searchField.clear();
         reportsTable.setItems(reportList);
+        loadLast30Days();
     }
 
     @FXML
     private void onExport() {
-        System.out.println("Exporting reports...");
+        // Print summary to console (can be extended to CSV/PDF later)
+        try {
+            reportService.printMonthlyReport();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Export");
+            alert.setContentText("Report summary printed to console.");
+            alert.showAndWait();
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Export Error");
+            alert.setContentText("Error: " + e.getMessage());
+            alert.showAndWait();
+        }
     }
 
-    public static class Report {
-        private final javafx.beans.property.SimpleStringProperty date;
-        private final javafx.beans.property.SimpleDoubleProperty sales;
-        private final javafx.beans.property.SimpleIntegerProperty items;
-        private final javafx.beans.property.SimpleDoubleProperty profit;
+    // ── Row model ──────────────────────────────────────────────────────────────
 
-        public Report(String date, double sales, int items, double profit) {
-            this.date = new javafx.beans.property.SimpleStringProperty(date);
-            this.sales = new javafx.beans.property.SimpleDoubleProperty(sales);
-            this.items = new javafx.beans.property.SimpleIntegerProperty(items);
-            this.profit = new javafx.beans.property.SimpleDoubleProperty(profit);
+    public static class ReportRow {
+        private final SimpleStringProperty date;
+        private final SimpleDoubleProperty sales;
+        private final SimpleIntegerProperty items;
+        private final SimpleDoubleProperty profit;
+
+        public ReportRow(String date, double sales, int items, double profit) {
+            this.date   = new SimpleStringProperty(date);
+            this.sales  = new SimpleDoubleProperty(sales);
+            this.items  = new SimpleIntegerProperty(items);
+            this.profit = new SimpleDoubleProperty(profit);
         }
 
-        public javafx.beans.property.SimpleStringProperty dateProperty() { return date; }
-        public javafx.beans.property.SimpleDoubleProperty salesProperty() { return sales; }
-        public javafx.beans.property.SimpleIntegerProperty itemsProperty() { return items; }
-        public javafx.beans.property.SimpleDoubleProperty profitProperty() { return profit; }
+        public SimpleStringProperty  dateProperty()   { return date; }
+        public SimpleDoubleProperty  salesProperty()  { return sales; }
+        public SimpleIntegerProperty itemsProperty()  { return items; }
+        public SimpleDoubleProperty  profitProperty() { return profit; }
 
         public String getDate() { return date.get(); }
     }

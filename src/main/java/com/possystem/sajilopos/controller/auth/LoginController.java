@@ -61,6 +61,7 @@ public class LoginController {
                 Stage stage = (Stage) usernameField.getScene().getWindow();
                 stage.setScene(new Scene(root));
                 stage.setTitle("Dashboard - " + user.getRole());
+                stage.setMaximized(true);
 
             } catch (Exception e) {
                 e.printStackTrace();

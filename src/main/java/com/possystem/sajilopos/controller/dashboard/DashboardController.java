@@ -51,19 +51,24 @@ public class DashboardController {
         SessionManager session = SessionManager.getInstance();
 
         if (session.isCashier()) {
-            inventoryMenu.setVisible(false);
-            purchasesMenu.setVisible(false);
-            purchaseHistoryMenu.setVisible(false);
-            suppliersMenu.setVisible(false);
-            reportsMenu.setVisible(false);
-            usersMenu.setVisible(false);
-            settingsMenu.setVisible(false);
+            setHidden(inventoryMenu);
+            setHidden(purchasesMenu);
+            setHidden(purchaseHistoryMenu);
+            setHidden(suppliersMenu);
+            setHidden(reportsMenu);
+            setHidden(usersMenu);
+            setHidden(settingsMenu);
         }
 
         if (session.isManager()) {
-            usersMenu.setVisible(false);
-            settingsMenu.setVisible(false);
+            setHidden(usersMenu);
+            setHidden(settingsMenu);
         }
+    }
+
+    private void setHidden(Button button) {
+        button.setVisible(false);
+        button.setManaged(false);
     }
 
     private void loadView(String path) {
@@ -142,5 +147,25 @@ public class DashboardController {
     @FXML
     private void openUsers() {
         loadView("/fxml/users/users.fxml");
+    }
+
+    @FXML
+    private void handleLogout() {
+        try {
+            SessionManager.getInstance().logout();
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(
+                getClass().getResource("/fxml/auth/login.fxml")
+            );
+            javafx.scene.Parent root = loader.load();
+            javafx.stage.Stage stage = (javafx.stage.Stage) rootPane.getScene().getWindow();
+            stage.setScene(new javafx.scene.Scene(root));
+            stage.setTitle("Sajilo POS - Login");
+            stage.setMaximized(false);
+            stage.setWidth(1280);
+            stage.setHeight(720);
+            stage.centerOnScreen();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
