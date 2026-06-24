@@ -12,7 +12,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,12 +81,12 @@ public class SalesController {
     @FXML
     public void initialize() {
         setupTableColumns();
-        
+
         // Setup payment methods FIRST
         ObservableList<String> paymentMethods = FXCollections.observableArrayList("Cash", "Card", "Cheque", "Digital");
         paymentMethodCombo.setItems(paymentMethods);
         paymentMethodCombo.getSelectionModel().selectFirst(); // Set default to Cash
-        
+
         loadCustomers();
         loadProducts();
         setupProductSearch();
@@ -103,17 +102,13 @@ public class SalesController {
      * Setup table columns
      */
     private void setupTableColumns() {
-        colProduct.setCellValueFactory(data ->
-            new SimpleStringProperty(data.getValue().getProductName()));
+        colProduct.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getProductName()));
 
-        colPrice.setCellValueFactory(data ->
-            new SimpleDoubleProperty(data.getValue().getUnitPrice()).asObject());
+        colPrice.setCellValueFactory(data -> new SimpleDoubleProperty(data.getValue().getUnitPrice()).asObject());
 
-        colQty.setCellValueFactory(data ->
-            new SimpleIntegerProperty(data.getValue().getQuantity()).asObject());
+        colQty.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getQuantity()).asObject());
 
-        colSubtotal.setCellValueFactory(data ->
-            new SimpleDoubleProperty(data.getValue().getSubtotal()).asObject());
+        colSubtotal.setCellValueFactory(data -> new SimpleDoubleProperty(data.getValue().getSubtotal()).asObject());
 
         // Add delete button to action column
         colAction.setCellFactory(param -> new TableCell<SaleItem, Void>() {
@@ -182,8 +177,8 @@ public class SalesController {
     private void addWalkInCustomerOption() {
         // Create a customer object with ID -1 for walk-in customer
         Customer walkIn = new Customer("Walk-in Customer", "", "", 0);
-        walkIn.setCustomerId(0);  // Use 0 as placeholder
-        
+        walkIn.setCustomerId(0); // Use 0 as placeholder
+
         List<Customer> customers = new ArrayList<>(customerCombo.getItems());
         customers.add(0, walkIn);
         customerCombo.setItems(FXCollections.observableArrayList(customers));
@@ -206,7 +201,7 @@ public class SalesController {
     private void setupProductSearch() {
         productSearchField.setOnKeyReleased(event -> {
             String searchText = productSearchField.getText().trim().toLowerCase();
-            
+
             if (searchText.isEmpty()) {
                 productCombo.setItems(FXCollections.observableArrayList(allProducts));
             } else {
@@ -228,7 +223,8 @@ public class SalesController {
                     if (empty || item == null) {
                         setText("");
                     } else {
-                        setText(item.getProductName() + " - Rs. " + item.getPrice() + " (Stock: " + item.getStock() + ")");
+                        setText(item.getProductName() + " - Rs. " + item.getPrice() + " (Stock: " + item.getStock()
+                                + ")");
                     }
                 }
             });
@@ -250,9 +246,9 @@ public class SalesController {
         amountPaidField.setOnKeyReleased(event -> calculateChange());
         discountField.setOnKeyReleased(event -> {
             try {
-                double manualDiscount = discountField.getText().trim().isEmpty() ? 0 : 
-                    Double.parseDouble(discountField.getText().trim());
-                
+                double manualDiscount = discountField.getText().trim().isEmpty() ? 0
+                        : Double.parseDouble(discountField.getText().trim());
+
                 if (currentSale != null) {
                     // If manual discount is entered, use it; otherwise use tiered discount
                     if (manualDiscount > 0) {
@@ -284,8 +280,8 @@ public class SalesController {
                 return;
             }
 
-            double amountPaid = amountPaidField.getText().trim().isEmpty() ? 0 :
-                Double.parseDouble(amountPaidField.getText().trim());
+            double amountPaid = amountPaidField.getText().trim().isEmpty() ? 0
+                    : Double.parseDouble(amountPaidField.getText().trim());
 
             double change = amountPaid - currentSale.getFinalAmount();
             changeLabel.setText(String.format("Rs. %.2f", change));
@@ -399,8 +395,8 @@ public class SalesController {
             double amountPaid = Double.parseDouble(amountPaidStr);
 
             if (amountPaid < currentSale.getFinalAmount()) {
-                showError("Amount paid is less than final amount. Final: Rs. " + 
-                         String.format("%.2f", currentSale.getFinalAmount()));
+                showError("Amount paid is less than final amount. Final: Rs. " +
+                        String.format("%.2f", currentSale.getFinalAmount()));
                 return;
             }
 
@@ -420,7 +416,7 @@ public class SalesController {
             int saleId = salesService.saveSale(currentSale);
 
             if (saleId > 0) {
-                showInfo("Sale completed successfully!\n\nInvoice: " + currentSale.getInvoiceNo() + 
+                showInfo("Sale completed successfully!\n\nInvoice: " + currentSale.getInvoiceNo() +
                         "\nChange: Rs. " + String.format("%.2f", currentSale.getChangeAmount()));
                 handleClear();
             } else {
@@ -479,9 +475,10 @@ public class SalesController {
                     .filter(c -> c.getCustomerId() == currentSale.getCustomerId())
                     .findFirst()
                     .orElse(null);
-            
+
             if (customer != null) {
-                double autoDiscount = salesService.calculateTieredDiscount(customer.getLoyaltyPoints(), currentSale.getTotalAmount());
+                double autoDiscount = salesService.calculateTieredDiscount(customer.getLoyaltyPoints(),
+                        currentSale.getTotalAmount());
                 currentSale.setDiscountAmount(autoDiscount);
                 currentSale.recalculateTotals();
                 // Show the auto-applied discount
