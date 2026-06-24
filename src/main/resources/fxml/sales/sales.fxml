@@ -1,41 +1,191 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox xmlns="http://javafx.com/javafx/17"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.possystem.sajilopos.controller.sales.salescontroller"
-      spacing="10"
-      style="-fx-padding: 20; -fx-background-color: #f8fafc;">
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.possystem.sajilopos.controller.sales.SalesController"
+            prefWidth="1200" prefHeight="750"
+            style="-fx-background-color: #f1f5f9;">
 
-    <Label text="Sales / POS"
-           style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+    <!-- TOP HEADER -->
+    <top>
+        <HBox prefHeight="70" style="-fx-background-color: white; -fx-border-color: #e2e8f0;">
+            <children>
+                <Label text="Sales Management"
+                       style="-fx-font-size: 26px; -fx-font-weight: bold;">
+                    <HBox.margin>
+                        <Insets top="20" left="25"/>
+                    </HBox.margin>
+                </Label>
+            </children>
+        </HBox>
+    </top>
 
-    <TableView fx:id="cartTable" prefHeight="300">
+    <!-- LEFT FORM -->
+    <left>
+        <ScrollPane style="-fx-background-color: white; -fx-border-color: #e2e8f0;" prefWidth="380" fitToWidth="true">
+            <content>
+                <VBox spacing="15" prefWidth="350" style="-fx-background-color: white; -fx-padding: 20;">
+                    <children>
+                        <Label text="Sales Details"
+                               style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
 
-        <columns>
-            <TableColumn fx:id="productCol" text="Product"/>
-            <TableColumn fx:id="qtyCol" text="Qty"/>
-            <TableColumn fx:id="priceCol" text="Price"/>
-        </columns>
+                        <Separator/>
 
-    </TableView>
+                        <!-- Customer Selection -->
+                        <Label text="Customer" style="-fx-font-size: 12px; -fx-text-fill: #64748b;"/>
+                        <ComboBox fx:id="customerCombo" prefWidth="300" promptText="Select customer..."
+                                 style="-fx-pref-height: 35px;"/>
 
-    <HBox spacing="10">
+                        <!-- Available Loyalty Points -->
+                        <HBox spacing="10">
+                            <Label text="Available Points:" style="-fx-font-size: 12px; -fx-text-fill: #64748b;"/>
+                            <Label fx:id="loyaltyPointsLabel" text="0"
+                                   style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #059669;"/>
+                        </HBox>
 
-        <TextField fx:id="barcodeField"
-                   promptText="Scan / Enter Barcode"
-                   HBox.hgrow="ALWAYS"/>
+                        <Separator/>
 
-        <Button text="Add Item" onAction="#addItem"/>
+                        <Label text="Add Items"
+                               style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
 
-    </HBox>
+                        <!-- Product Search/Selection -->
+                        <Label text="Search Product" style="-fx-font-size: 12px; -fx-text-fill: #64748b;"/>
+                        <TextField fx:id="productSearchField" promptText="Type product name..."
+                                   style="-fx-pref-height: 35px;"/>
 
-    <Label fx:id="totalLabel"
-           text="Total: 0"
-           style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+                        <!-- Product ComboBox (populated from search) -->
+                        <Label text="Select Product" style="-fx-font-size: 12px; -fx-text-fill: #64748b;"/>
+                        <ComboBox fx:id="productCombo" prefWidth="300" promptText="Select from results..."
+                                 style="-fx-pref-height: 35px;"/>
 
-    <Button text="Checkout" onAction="#checkout"/>
+                        <!-- Quantity -->
+                        <Label text="Quantity" style="-fx-font-size: 12px; -fx-text-fill: #64748b;"/>
+                        <TextField fx:id="quantityField" promptText="0"
+                                   style="-fx-pref-height: 35px;"/>
 
-</VBox>
+                        <!-- Add Product Button -->
+                        <Button text="Add Product" onAction="#handleAddProduct" prefWidth="300" prefHeight="40"
+                                style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;"/>
+
+                        <Separator/>
+
+                        <Label text="Totals"
+                               style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+
+                        <!-- Total Items -->
+                        <HBox spacing="10">
+                            <Label text="Total Items:" style="-fx-font-size: 12px; -fx-text-fill: #64748b;"/>
+                            <Label fx:id="totalItemsLabel" text="0"
+                                   style="-fx-font-size: 12px; -fx-font-weight: bold;"/>
+                        </HBox>
+
+                        <!-- Subtotal -->
+                        <HBox spacing="10">
+                            <Label text="Subtotal:" style="-fx-font-size: 12px; -fx-text-fill: #64748b;"/>
+                            <Label fx:id="subtotalLabel" text="Rs. 0.00"
+                                   style="-fx-font-size: 12px; -fx-font-weight: bold;"/>
+                        </HBox>
+
+                        <!-- Discount -->
+                        <Label text="Discount (Rs.)" style="-fx-font-size: 12px; -fx-text-fill: #64748b;"/>
+                        <TextField fx:id="discountField" promptText="0.00 (auto-applied)"
+                                   style="-fx-pref-height: 35px;"/>
+                        <Label text="(Manual entry overrides auto discount. Leave blank for tiered discount)"
+                               style="-fx-font-size: 10px; -fx-text-fill: #94a3b8; -fx-font-style: italic;"/>
+
+                        <!-- Final Total -->
+                        <HBox spacing="10">
+                            <Label text="Final Total:" style="-fx-font-size: 12px; -fx-text-fill: #64748b;"/>
+                            <Label fx:id="finalTotalLabel" text="Rs. 0.00"
+                                   style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #059669;"/>
+                        </HBox>
+
+                        <Separator/>
+
+                        <Label text="Payment"
+                               style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+
+                        <!-- Payment Method -->
+                        <Label text="Payment Method" style="-fx-font-size: 12px; -fx-text-fill: #64748b;"/>
+                        <ComboBox fx:id="paymentMethodCombo" prefWidth="300" promptText="Select payment method..."
+                                 style="-fx-pref-height: 35px;"/>
+
+                        <!-- Amount Paid -->
+                        <Label text="Amount Paid (Rs.)" style="-fx-font-size: 12px; -fx-text-fill: #64748b;"/>
+                        <TextField fx:id="amountPaidField" promptText="0.00"
+                                   style="-fx-pref-height: 35px;"/>
+
+                        <!-- Change -->
+                        <HBox spacing="10">
+                            <Label text="Change:" style="-fx-font-size: 12px; -fx-text-fill: #64748b;"/>
+                            <Label fx:id="changeLabel" text="Rs. 0.00"
+                                   style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #ef4444;"/>
+                        </HBox>
+
+                        <Separator/>
+
+                        <!-- Action Buttons -->
+                        <HBox spacing="10">
+                            <children>
+                                <Button text="Remove Product" onAction="#handleRemoveProduct" prefWidth="160" prefHeight="40"
+                                        style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-size: 14px;"/>
+                                <Button text="Complete Sale" onAction="#handleCompleteSale" prefWidth="120" prefHeight="40"
+                                        style="-fx-background-color: #10b981; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;"/>
+                            </children>
+                        </HBox>
+
+                        <Button text="Clear" onAction="#handleClear" prefWidth="300" prefHeight="40"
+                                style="-fx-background-color: #94a3b8; -fx-text-fill: white; -fx-font-size: 14px;"/>
+
+                        <VBox spacing="8" style="-fx-background-color: #f8fafc; -fx-padding: 15; -fx-background-radius: 8;">
+                            <children>
+                                <Label text="Instructions:" style="-fx-font-weight: bold; -fx-font-size: 12px;"/>
+                                <Label text="• Select customer (Walk-in or registered)" style="-fx-font-size: 11px;" wrapText="true"/>
+                                <Label text="• Search and add products" style="-fx-font-size: 11px;" wrapText="true"/>
+                                <Label text="• Enter quantity for each product" style="-fx-font-size: 11px;" wrapText="true"/>
+                                <Label text="• Apply discount if needed" style="-fx-font-size: 11px;" wrapText="true"/>
+                                <Label text="• Select payment method" style="-fx-font-size: 11px;" wrapText="true"/>
+                                <Label text="• Enter amount paid to see change" style="-fx-font-size: 11px;" wrapText="true"/>
+                                <Label text="• Click Complete Sale to finish" style="-fx-font-size: 11px;" wrapText="true"/>
+                            </children>
+                        </VBox>
+
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </left>
+
+    <!-- CENTER TABLE -->
+    <center>
+        <VBox style="-fx-padding: 20;" spacing="10">
+            <children>
+                <Label text="Sale Items"
+                       style="-fx-font-size: 16px; -fx-font-weight: bold;">
+                    <VBox.margin>
+                        <Insets bottom="10"/>
+                    </VBox.margin>
+                </Label>
+
+                <TableView fx:id="itemsTable" VBox.vgrow="ALWAYS"
+                           style="-fx-background-color: white;">
+                    <columns>
+                        <TableColumn fx:id="colProduct" text="Product" prefWidth="250"/>
+                        <TableColumn fx:id="colPrice" text="Price (Rs.)" prefWidth="120"/>
+                        <TableColumn fx:id="colQty" text="Qty" prefWidth="80"/>
+                        <TableColumn fx:id="colSubtotal" text="Subtotal (Rs.)" prefWidth="150"/>
+                        <TableColumn fx:id="colAction" text="Action" prefWidth="100"/>
+                    </columns>
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                    </columnResizePolicy>
+                </TableView>
+            </children>
+        </VBox>
+    </center>
+
+</BorderPane>

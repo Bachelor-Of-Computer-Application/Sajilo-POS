@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class UsersController {
+public class userscontroller {
 
     @FXML private TextField searchField;
     @FXML private TableView<UserRow> usersTable;
