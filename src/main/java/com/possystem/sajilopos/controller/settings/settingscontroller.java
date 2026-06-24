@@ -1,15 +1,18 @@
 package com.possystem.sajilopos.controller.settings;
 
+import com.possystem.sajilopos.config.SessionManager;
 import com.possystem.sajilopos.service.UserService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
-public class settingscontroller {
+public class SettingsController {
 
     @FXML private TextField usernameField;
     @FXML private PasswordField passwordField;
@@ -34,12 +37,24 @@ public class settingscontroller {
 
     @FXML
     private void createUser(ActionEvent event) {
+        // SECURITY: Only ADMIN can create users
+        SessionManager session = SessionManager.getInstance();
+        if (!session.isAdmin()) {
+            showError("Access Denied!", "Only administrators can create users.");
+            return;
+        }
+        
         String role = roleChoice.getValue();
         String username = newUsernameField.getText().trim();
         String password = newPasswordField.getText();
 
         if (username.isEmpty() || password.isEmpty()) {
             showStatus("Username and password cannot be empty.", true);
+            return;
+        }
+
+        if (password.length() < 6) {
+            showStatus("Password must be at least 6 characters long.", true);
             return;
         }
 
@@ -89,5 +104,13 @@ public class settingscontroller {
         } else {
             System.out.println(message);
         }
+    }
+
+    private void showError(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(title);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

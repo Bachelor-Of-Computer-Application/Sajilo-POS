@@ -4,8 +4,6 @@ import com.possystem.sajilopos.config.SessionManager;
 import com.possystem.sajilopos.model.User;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
@@ -14,67 +12,36 @@ import javafx.stage.Stage;
 public class DashboardController {
 
     @FXML private BorderPane rootPane;
-
+    @FXML private Label roleLabel;
     @FXML private Label companyNameLabel;
     @FXML private Label sidebarCompanyLabel;
-    @FXML private Label roleLabel;
-
-    @FXML private Label totalSalesLabel;
-    @FXML private Label productCountLabel;
-    @FXML private Label customerCountLabel;
-    @FXML private Label supplierCountLabel;
-
     @FXML private Button dashboardMenu;
-    @FXML private Button productsMenu;
     @FXML private Button customersMenu;
+    @FXML private Button purchaseHistoryMenu;
     @FXML private Button inventoryMenu;
     @FXML private Button purchasesMenu;
-    @FXML private Button purchaseHistoryMenu;
     @FXML private Button suppliersMenu;
-    @FXML private Button salesMenu;
     @FXML private Button reportsMenu;
     @FXML private Button usersMenu;
     @FXML private Button settingsMenu;
 
     @FXML
     public void initialize() {
-
-        User user = SessionManager.getInstance().getCurrentUser();
-
-        if (user != null) {
-            roleLabel.setText("Logged in as: " + user.getRole());
-
-            companyNameLabel.setText("Company ID : " + user.getCompanyId());
-            sidebarCompanyLabel.setText("Company ID : " + user.getCompanyId());
+        // Load current user session info
+        SessionManager session = SessionManager.getInstance();
+        User currentUser = session.getCurrentUser();
+        
+        if (currentUser != null) {
+            roleLabel.setText("Logged in as: " + currentUser.getRole());
+            companyNameLabel.setText("Company: " + (currentUser.getCompanyId() > 0 ? currentUser.getCompanyId() : "N/A"));
+            sidebarCompanyLabel.setText("Company: " + (currentUser.getCompanyId() > 0 ? currentUser.getCompanyId() : "N/A"));
         }
-
-        loadStatistics();
+        
+        // Apply role-based permissions
         applyRolePermissions();
-
-        openDashboard(); // default screen
-    }
-
-    // 🔥 CORE NAVIGATION ENGINE (THIS IS THE MAGIC)
-    private void loadCenter(String fxmlPath) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Parent view = loader.load();
-            rootPane.setCenter(view);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void loadStatistics() {
-        totalSalesLabel.setText("Rs. 0");
-        productCountLabel.setText("0");
-        customerCountLabel.setText("0");
-        supplierCountLabel.setText("0");
     }
 
     private void applyRolePermissions() {
-
         SessionManager session = SessionManager.getInstance();
 
         if (session.isCashier()) {
@@ -93,86 +60,81 @@ public class DashboardController {
         }
     }
 
+    private void loadView(String path) {
+        try {
+            System.out.println("Loading view: " + path);
+            rootPane.setCenter(
+                    FXMLLoader.load(getClass().getResource(path))
+            );
+            System.out.println("View loaded successfully: " + path);
+        } catch (Exception e) {
+            System.err.println("Error loading view: " + path);
+            System.err.println("Error message: " + e.getMessage());
+            e.printStackTrace();
+            
+            // Show error in the center pane
+            Label errorLabel = new Label("Error loading " + path + "\n" + e.getMessage());
+            errorLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: red; -fx-padding: 20;");
+            rootPane.setCenter(errorLabel);
+        }
+    }
+
     // =========================
     // NAVIGATION METHODS
     // =========================
 
     @FXML
     private void openDashboard() {
-        loadCenter("/fxml/dashboard/dashboard-home.fxml");
+        loadView("/fxml/dashboard/dashboard-home.fxml");
     }
 
     @FXML
     private void openProducts() {
-        loadCenter("/fxml/product/product.fxml");
+        loadView("/fxml/product/product.fxml");
     }
 
     @FXML
     private void openCustomers() {
-        loadCenter("/fxml/customers/customers.fxml");
-    }
-
-    @FXML
-    private void openInventory() {
-        loadCenter("/fxml/inventory/inventory.fxml");
-    }
-
-    @FXML
-    private void openPurchases() {
-        loadCenter("/fxml/purchases/purchases.fxml");
-    }
-
-    @FXML
-    private void openPurchaseHistory() {
-        loadCenter("/fxml/purchases/purchaseHistory.fxml");
+        loadView("/fxml/customers/customers.fxml");
     }
 
     @FXML
     private void openSuppliers() {
-        loadCenter("/fxml/suppliers/suppliers.fxml");
-    }
-
-    @FXML
-    private void openSales() {
-        loadCenter("/fxml/sales/sales.fxml");
+        loadView("/fxml/suppliers/suppliers.fxml");
     }
 
     @FXML
     private void openReports() {
-        loadCenter("/fxml/reports/reports.fxml");
+        loadView("/fxml/reports/reports.fxml");
     }
 
     @FXML
-    private void openUsers() {
-        loadCenter("/fxml/users/users.fxml");
+    private void openSales() {
+        loadView("/fxml/sales/sales.fxml");
+    }
+    
+    @FXML
+    private void openInventory() {
+        loadView("/fxml/inventory/inventory.fxml");
+    }
+
+    @FXML
+    private void openPurchases() {
+        loadView("/fxml/purchases/purchases.fxml");
+    }
+
+    @FXML
+    private void openPurchaseHistory() {
+        loadView("/fxml/purchases/purchaseHistory.fxml");
     }
 
     @FXML
     private void openSettings() {
-        loadCenter("/fxml/settings/settings.fxml");
+        loadView("/fxml/settings/settings.fxml");
     }
 
-    // =========================
-    // LOGOUT
-    // =========================
-
     @FXML
-    private void handleLogout() {
-        try {
-            SessionManager.getInstance().logout();
-
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/fxml/auth/login.fxml")
-            );
-
-            Parent root = loader.load();
-
-            Stage stage = (Stage) rootPane.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Sajilo POS");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private void openUsers() {
+        loadView("/fxml/users/users.fxml");
     }
 }

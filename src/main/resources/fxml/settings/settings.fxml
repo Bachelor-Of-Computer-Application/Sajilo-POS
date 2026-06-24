@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<ScrollPane fitToWidth="true" style="-fx-background: #f1f5f9;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.possystem.sajilopos.controller.settings.settingscontroller">
+<ScrollPane fitToWidth="true" style="-fx-background: #f1f5f9;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.possystem.sajilopos.controller.settings.SettingsController">
 
     <content>
 
@@ -44,7 +44,6 @@
                     <Label fx:id="statusLabel" style="-fx-font-size: 13px; -fx-padding: 5 0 0 0;"/>
 
         </VBox>
-
             <!-- SYSTEM SECTION -->
             <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;">
 

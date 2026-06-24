@@ -1,5 +1,6 @@
 package com.possystem.sajilopos.controller.users;
 
+import com.possystem.sajilopos.config.SessionManager;
 import com.possystem.sajilopos.service.UserService;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class userscontroller {
+public class UsersController {
 
     @FXML private TextField searchField;
     @FXML private TableView<UserRow> usersTable;
@@ -69,6 +70,13 @@ public class userscontroller {
 
     @FXML
     private void onAdd() {
+        // SECURITY: Only ADMIN can create users
+        SessionManager session = SessionManager.getInstance();
+        if (!session.isAdmin()) {
+            showError("Access Denied! Only administrators can create users.");
+            return;
+        }
+        
         // Get username
         TextInputDialog usernameDialog = new TextInputDialog();
         usernameDialog.setTitle("Create User");
@@ -82,6 +90,11 @@ public class userscontroller {
         passwordDialog.setHeaderText("Enter password (min 6 chars):");
         Optional<String> passwordResult = passwordDialog.showAndWait();
         if (passwordResult.isEmpty()) return;
+
+        if (passwordResult.get().length() < 6) {
+            showError("Password must be at least 6 characters long.");
+            return;
+        }
 
         // Get role
         ChoiceDialog<String> roleDialog = new ChoiceDialog<>("CASHIER", "CASHIER", "MANAGER", "ADMIN");
@@ -109,6 +122,13 @@ public class userscontroller {
 
     @FXML
     private void onEdit() {
+        // SECURITY: Only ADMIN can edit users
+        SessionManager session = SessionManager.getInstance();
+        if (!session.isAdmin()) {
+            showError("Access Denied! Only administrators can edit users.");
+            return;
+        }
+        
         UserRow selected = usersTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
             showError("Please select a user to edit.");
@@ -140,6 +160,13 @@ public class userscontroller {
 
     @FXML
     private void onDelete() {
+        // SECURITY: Only ADMIN can delete users
+        SessionManager session = SessionManager.getInstance();
+        if (!session.isAdmin()) {
+            showError("Access Denied! Only administrators can delete users.");
+            return;
+        }
+        
         UserRow selected = usersTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
             showError("Please select a user to delete.");

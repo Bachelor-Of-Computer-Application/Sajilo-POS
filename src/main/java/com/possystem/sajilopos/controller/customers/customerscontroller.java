@@ -7,7 +7,7 @@ import javafx.scene.control.*;
 
 import java.util.stream.Collectors;
 
-public class customerscontroller {
+public class CustomerController {
 
     @FXML private TextField searchField;
     @FXML private TableView<Customer> customersTable;
