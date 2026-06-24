@@ -14,7 +14,7 @@ import javafx.scene.layout.GridPane;
 
 import java.time.format.DateTimeFormatter;
 
-public class inventorycontroller {
+public class InventoryController {
 
     @FXML private TextField searchField;
     @FXML private TableView<Product> inventoryTable;
