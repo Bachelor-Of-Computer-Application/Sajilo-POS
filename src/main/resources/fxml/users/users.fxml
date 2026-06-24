@@ -25,11 +25,9 @@
     <center>
         <TableView fx:id="usersTable">
             <columns>
-                <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
-                <TableColumn fx:id="colName" text="Name" prefWidth="150"/>
-                <TableColumn fx:id="colEmail" text="Email" prefWidth="200"/>
-                <TableColumn fx:id="colRole" text="Role" prefWidth="120"/>
-                <TableColumn fx:id="colStatus" text="Status" prefWidth="100"/>
+                <TableColumn fx:id="colId" text="ID" prefWidth="80"/>
+                <TableColumn fx:id="colName" text="Username" prefWidth="200"/>
+                <TableColumn fx:id="colRole" text="Role" prefWidth="150"/>
             </columns>
         </TableView>
     </center>

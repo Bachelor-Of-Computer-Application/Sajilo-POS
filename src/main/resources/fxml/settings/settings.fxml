@@ -41,6 +41,8 @@
 
             <Button text="Create User"
                     onAction="#createUser"/>
+                    <Label fx:id="statusLabel" style="-fx-font-size: 13px; -fx-padding: 5 0 0 0;"/>
+
         </VBox>
 
             <!-- SYSTEM SECTION -->
@@ -58,7 +60,7 @@
 
             </VBox>
 
-            <!-- SECURITY SECTION -->
+            <!-- SECURITY SECTION -->w
             <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;">
 
                 <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Security" />

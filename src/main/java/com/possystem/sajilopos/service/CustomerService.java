@@ -12,6 +12,7 @@ import java.util.List;
 public class CustomerService {
 
     private final CustomerDAO customerDAO;
+    private final UserService userService = new UserService();
 
     public CustomerService() {
         this.customerDAO = new CustomerDAO();
@@ -21,6 +22,7 @@ public class CustomerService {
      * Get all customers
      */
     public List<Customer> getAllCustomers() {
+        userService.requireLogin();
         return customerDAO.getAllCustomers();
     }
 
@@ -28,6 +30,7 @@ public class CustomerService {
      * Get a customer by ID
      */
     public Customer getCustomerById(int customerId) {
+        userService.requireLogin();
         return customerDAO.getCustomerById(customerId);
     }
 
@@ -35,6 +38,7 @@ public class CustomerService {
      * Get customer by phone number
      */
     public Customer getCustomerByPhone(String phone) {
+        userService.requireLogin();
         if (phone == null || phone.trim().isEmpty()) {
             throw new IllegalArgumentException("Phone number cannot be empty");
         }
@@ -45,6 +49,7 @@ public class CustomerService {
      * Add a new customer
      */
     public boolean addCustomer(String customerName, String phone, String address) {
+        userService.requireLogin();
         // Validation
         if (customerName == null || customerName.trim().isEmpty()) {
             throw new IllegalArgumentException("Customer name cannot be empty");
@@ -68,6 +73,7 @@ public class CustomerService {
      * Update an existing customer (loyalty points cannot be manually changed)
      */
     public boolean updateCustomer(int customerId, String customerName, String phone, String address) {
+        userService.requireManagerOrAbove();
         // Validation
         if (customerName == null || customerName.trim().isEmpty()) {
             throw new IllegalArgumentException("Customer name cannot be empty");
@@ -97,6 +103,7 @@ public class CustomerService {
      * Delete a customer
      */
     public boolean deleteCustomer(int customerId) {
+        userService.requireAdmin();
         Customer customer = customerDAO.getCustomerById(customerId);
         if (customer == null) {
             throw new IllegalArgumentException("Customer not found");
@@ -108,6 +115,7 @@ public class CustomerService {
      * Search customers by name or phone
      */
     public List<Customer> searchCustomers(String searchText) {
+        userService.requireLogin();
         if (searchText == null || searchText.trim().isEmpty()) {
             return getAllCustomers();
         }
@@ -118,6 +126,7 @@ public class CustomerService {
      * Update loyalty points
      */
     public boolean updateLoyaltyPoints(int customerId, int points) {
+        userService.requireAdmin();
         if (points < 0) {
             throw new IllegalArgumentException("Loyalty points cannot be negative");
         }
@@ -128,6 +137,7 @@ public class CustomerService {
      * Add loyalty points to existing balance
      */
     public boolean addLoyaltyPoints(int customerId, int pointsToAdd) {
+        userService.requireLogin();
         if (pointsToAdd < 0) {
             throw new IllegalArgumentException("Points to add cannot be negative");
         }
