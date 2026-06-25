@@ -82,8 +82,8 @@ public class ProductDAO {
      * Add a new product
      */
     public boolean addProduct(Product product) {
-        String sql = "INSERT INTO products (company_id, product_name, price, stock, description, active) " +
-                     "VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO products (company_id, product_name, price, stock, description, active, minimum_stock) " +
+             "VALUES (?, ?, ?, ?, ?, ?, ?)";
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -94,6 +94,8 @@ public class ProductDAO {
             stmt.setInt(4, product.getStock());
             stmt.setString(5, product.getDescription());
             stmt.setBoolean(6, product.isActive());
+            stmt.setInt(7, product.getMinimumStock());
+
             
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {

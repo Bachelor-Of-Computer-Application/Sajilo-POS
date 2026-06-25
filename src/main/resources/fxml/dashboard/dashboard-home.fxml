@@ -7,6 +7,7 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.possystem.sajilopos.controller.dashboard.DashboardHomeController"
             style="-fx-background-color: #f1f5f9;">
 
     <children>
@@ -24,7 +25,8 @@
                     </VBox.margin>
                 </Label>
 
-                <Label text="Rs. 125000"
+                <Label fx:id="totalSalesLabel"
+                       text="Rs. 0.00"
                        style="-fx-font-size: 28px; -fx-font-weight: bold;">
                     <VBox.margin>
                         <Insets top="10" left="20"/>
@@ -39,13 +41,14 @@
               style="-fx-background-color: white; -fx-background-radius: 15;">
 
             <children>
-                <Label text="Products">
+                <Label text="Transactions">
                     <VBox.margin>
                         <Insets top="20" left="20"/>
                     </VBox.margin>
                 </Label>
 
-                <Label text="245"
+                <Label fx:id="totalTransactionsLabel"
+                       text="0"
                        style="-fx-font-size: 28px; -fx-font-weight: bold;">
                     <VBox.margin>
                         <Insets top="10" left="20"/>
@@ -60,13 +63,14 @@
               style="-fx-background-color: white; -fx-background-radius: 15;">
 
             <children>
-                <Label text="Customers">
+                <Label text="Low Stock Products">
                     <VBox.margin>
                         <Insets top="20" left="20"/>
                     </VBox.margin>
                 </Label>
 
-                <Label text="95"
+                <Label fx:id="lowStockLabel"
+                       text="0"
                        style="-fx-font-size: 28px; -fx-font-weight: bold;">
                     <VBox.margin>
                         <Insets top="10" left="20"/>

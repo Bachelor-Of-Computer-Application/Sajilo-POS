@@ -5,6 +5,8 @@ module com.possystem.sajilopos {
     requires transitive javafx.graphics;
     requires java.sql;
     requires jbcrypt;
+    requires com.zaxxer.hikari;
+
 
     opens com.possystem.sajilopos to javafx.fxml;
     opens com.possystem.sajilopos.controller.auth to javafx.fxml;
@@ -18,6 +20,10 @@ module com.possystem.sajilopos {
     opens com.possystem.sajilopos.controller.users to javafx.fxml;
     opens com.possystem.sajilopos.controller.settings to javafx.fxml;
     opens com.possystem.sajilopos.controller.suppliers to javafx.fxml;
+    opens com.possystem.sajilopos.controller.dashboard to javafx.fxml;
+
+
+
 
     exports com.possystem.sajilopos;
 }

@@ -26,7 +26,7 @@
                 <TableColumn fx:id="colDate" text="Date" prefWidth="120"/>
                 <TableColumn fx:id="colSales" text="Total Sales" prefWidth="120"/>
                 <TableColumn fx:id="colItems" text="Items Sold" prefWidth="120"/>
-                <TableColumn fx:id="colProfit" text="Profit" prefWidth="120"/>
+                <TableColumn fx:id="profitColumn" text="Est. Margin (20%)" prefWidth="120.0" />
             </columns>
         </TableView>
     </center>

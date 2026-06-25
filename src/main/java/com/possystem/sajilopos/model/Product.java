@@ -13,6 +13,11 @@ public class Product {
     private Timestamp createdAt;
     private Timestamp updatedAt;
     private int minimumStock;
+    private int categoryId;
+
+    public int getCategoryId() { return categoryId; }
+    public void setCategoryId(int categoryId) { this.categoryId = categoryId; }
+
 
     // Constructor for creating new products (without ID)
     public Product(int companyId, String productName, double price, int stock, String description, int minimumStock) {

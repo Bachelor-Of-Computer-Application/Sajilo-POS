@@ -1,41 +1,52 @@
 package com.possystem.sajilopos.config;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
- * MySQL Database Connection Utility
- * Connects to: jdbc:mysql://localhost:3306/general_pos
+ * Database Connection Manager
+ *
+ * Uses HikariCP for efficient connection pooling.
+ * Connection details are loaded from config.properties:
+ * - db.url
+ * - db.username
+ * - db.password
  */
 public class DBConnection {
 
-    public static Connection getConnection() {
+    private static HikariDataSource dataSource;
+
+    static {
         try {
-            String url = Config.get("db.url");
-            String username = Config.get("db.username");
-            String password = Config.get("db.password");
+            HikariConfig config = new HikariConfig();
+            config.setJdbcUrl(Config.get("db.url"));
+            config.setUsername(Config.get("db.username"));
+            config.setPassword(Config.get("db.password"));
 
-            if (url == null || url.trim().isEmpty()) {
-                System.err.println("Database configuration missing in config.properties");
-                return null;
-            }
+            config.setMaximumPoolSize(10);
+            config.setMinimumIdle(2);
+            config.setConnectionTimeout(30000);
+            config.setIdleTimeout(600000);
+            config.setMaxLifetime(1800000);
 
-            // MySQL connection with credentials
-            Connection conn = DriverManager.getConnection(url, username, password);
-            System.out.println("MySQL database connection established successfully");
-            return conn;
+            dataSource = new HikariDataSource(config);
 
-        } catch (SQLException e) {
-            System.err.println("MySQL database connection failed: " + e.getMessage());
-            System.err.println("Check your config.properties and ensure MySQL server is running");
-            e.printStackTrace();
-            return null;
+            System.out.println("HikariCP connection pool initialized");
+
         } catch (Exception e) {
-            System.err.println("Unexpected error during database connection: " + e.getMessage());
+            System.err.println("Failed to initialize connection pool: " + e.getMessage());
             e.printStackTrace();
-            return null;
         }
+    }
+
+    public static Connection getConnection() throws SQLException {
+        if (dataSource == null) {
+            throw new SQLException("Connection pool not initialized");
+        }
+        return dataSource.getConnection();
     }
 
     public static boolean testConnection() {

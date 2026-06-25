@@ -206,4 +206,18 @@ public class UserDAO {
     public static String hashPassword(String plainPassword) {
         return BCrypt.hashpw(plainPassword, BCrypt.gensalt());
     }
+    
+    public boolean changePassword(int userId, String newPasswordHash) {
+    String sql = "UPDATE users SET password_hash = ? WHERE user_id = ?";
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setString(1, newPasswordHash);
+        stmt.setInt(2, userId);
+        return stmt.executeUpdate() > 0;
+    } catch (SQLException e) {
+        System.err.println("Error changing password: " + e.getMessage());
+    }
+    return false;
+}
+
 }
