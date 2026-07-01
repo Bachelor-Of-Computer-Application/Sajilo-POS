@@ -3,97 +3,143 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<ScrollPane fitToWidth="true" style="-fx-background: #f1f5f9;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.possystem.sajilopos.controller.settings.settingscontroller">
+<ScrollPane fitToWidth="true" style="-fx-background: #f1f5f9;"
+            xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.possystem.sajilopos.controller.settings.settingscontroller">
 
     <content>
-
         <VBox spacing="20" style="-fx-padding: 20;">
 
-            <!-- TITLE -->
-            <Label style="-fx-font-size: 28px; -fx-font-weight: bold;" text="Settings" />
+            <!-- ── PAGE HEADER ─────────────────────────────────────────── -->
+            <HBox alignment="CENTER_LEFT" spacing="16">
+                <Label style="-fx-font-size: 28px; -fx-font-weight: bold;" text="Settings" />
+                <!-- Shows "Logged in as: admin (ADMIN)" etc. -->
+                <Label fx:id="sessionInfoLabel"
+                       style="-fx-font-size: 13px; -fx-text-fill: #64748b; -fx-padding: 4 10; -fx-background-color: #e2e8f0; -fx-background-radius: 20;" />
+            </HBox>
 
-            <!-- ACCOUNT SECTION -->
-            <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;">
+            <!-- Shared status / feedback label -->
+            <Label fx:id="statusLabel" style="-fx-font-size: 13px;" wrapText="true" />
 
+            <!-- ══ ACCOUNT SETTINGS  (ALL roles) ════════════════════════ -->
+            <VBox fx:id="accountSection"
+                  spacing="10"
+                  style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;">
                 <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Account Settings" />
-
-                <TextField fx:id="usernameField" promptText="Username" />
-
-                <PasswordField fx:id="passwordField" promptText="Password" />
-
-                <Button onAction="#updateAccount" text="Update Account" />
-
+                <Label text="Current Password (required to save changes)" style="-fx-text-fill: #64748b;" />
+                <PasswordField fx:id="currentPasswordAccountField" promptText="Enter current password" />
+                <Label text="New Username" style="-fx-text-fill: #64748b;" />
+                <TextField fx:id="newUsernameAccountField" promptText="New username" />
+                <Label text="New Password" style="-fx-text-fill: #64748b;" />
+                <PasswordField fx:id="newPasswordAccountField" promptText="New password (min 6 chars)" />
+                <Button onAction="#updateAccount"
+                        text="Update Account"
+                        style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-background-radius: 6;" />
             </VBox>
 
-            <!-- USER MANAGEMENT SECTION -->
-        <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;">
-            <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="User And Roles" />
+            <!-- ══ CHANGE PASSWORD  (ALL roles) ═════════════════════════ -->
+            <VBox fx:id="changePasswordSection"
+                  spacing="10"
+                  style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;">
+                <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Change Password" />
+                <Label text="Current Password" style="-fx-text-fill: #64748b;" />
+                <PasswordField fx:id="currentPasswordField" promptText="Current password" />
+                <Label text="New Password" style="-fx-text-fill: #64748b;" />
+                <PasswordField fx:id="newPasswordField" promptText="New password (min 6 chars)" />
+                <Button onAction="#changePassword"
+                        text="Change Password"
+                        style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-background-radius: 6;" />
+            </VBox>
 
-            <ChoiceBox fx:id="roleChoice"/>
+            <!-- ══ CREATE USER  (ADMIN only) ════════════════════════════ -->
+            <VBox fx:id="createUserSection"
+                  spacing="10"
+                  style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;">
+                <HBox alignment="CENTER_LEFT" spacing="8">
+                    <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Create User" />
+                    <Label text="Admin only"
+                           style="-fx-font-size: 11px; -fx-text-fill: white; -fx-background-color: #f59e0b; -fx-padding: 2 8; -fx-background-radius: 10;" />
+                </HBox>
+                <Label text="Role" style="-fx-text-fill: #64748b;" />
+                <ChoiceBox fx:id="roleChoice" maxWidth="Infinity" />
+                <Label text="Username" style="-fx-text-fill: #64748b;" />
+                <TextField fx:id="newUsernameField" promptText="New user's username" />
+                <Label text="Password" style="-fx-text-fill: #64748b;" />
+                <PasswordField fx:id="newUserPasswordField" promptText="New user's password (min 6 chars)" />
+                <Button onAction="#createUser"
+                        text="Create User"
+                        style="-fx-background-color: #10b981; -fx-text-fill: white; -fx-background-radius: 6;" />
+            </VBox>
 
-            <Label text="Username"/>
+            <!-- ══ UPDATE USER ROLE  (ADMIN only) ═══════════════════════ -->
+            <VBox fx:id="updateRoleSection"
+                  spacing="10"
+                  style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;">
+                <HBox alignment="CENTER_LEFT" spacing="8">
+                    <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Update User Role" />
+                    <Label text="Admin only"
+                           style="-fx-font-size: 11px; -fx-text-fill: white; -fx-background-color: #f59e0b; -fx-padding: 2 8; -fx-background-radius: 10;" />
+                </HBox>
+                <Label text="Select User" style="-fx-text-fill: #64748b;" />
+                <ComboBox fx:id="userListCombo" maxWidth="Infinity" promptText="Select a user..." />
+                <Label text="New Role" style="-fx-text-fill: #64748b;" />
+                <ChoiceBox fx:id="updateRoleChoice" maxWidth="Infinity" />
+                <Button onAction="#updateUserRole"
+                        text="Update Role"
+                        style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-background-radius: 6;" />
+            </VBox>
 
-            <TextField fx:id="newUsernameField"/>
-
-            <Label text="Password"/>
-
-            <PasswordField fx:id="newPasswordField"/>
-
-            <Button text="Create User"
-                    onAction="#createUser"/>
-                    <Label fx:id="statusLabel" style="-fx-font-size: 13px; -fx-padding: 5 0 0 0;"/>
-
-        </VBox>
-            <!-- SYSTEM SECTION -->
-            <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;">
-
-                <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="System Settings" />
-
-                <ChoiceBox fx:id="themeChoice" />
-
+            <!-- ══ SYSTEM SETTINGS  (ADMIN only) ════════════════════════ -->
+            <VBox fx:id="systemSettingsSection"
+                  spacing="10"
+                  style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;">
+                <HBox alignment="CENTER_LEFT" spacing="8">
+                    <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="System Settings" />
+                    <Label text="Admin only"
+                           style="-fx-font-size: 11px; -fx-text-fill: white; -fx-background-color: #f59e0b; -fx-padding: 2 8; -fx-background-radius: 10;" />
+                </HBox>
+                <Label text="Theme" style="-fx-text-fill: #64748b;" />
+                <ChoiceBox fx:id="themeChoice" maxWidth="Infinity" />
                 <CheckBox fx:id="taxCheck" text="Enable Tax" />
-
                 <CheckBox fx:id="discountCheck" text="Enable Discount System" />
-
-                <Button onAction="#saveSystemSettings" text="Save System Settings" />
-
+                <Button onAction="#saveSystemSettings"
+                        text="Save System Settings"
+                        style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-background-radius: 6;" />
             </VBox>
 
-            <!-- SECURITY SECTION -->
-            <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;">
-
-                <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Security" />
-
-                <Button onAction="#changePassword" text="Change Password" />
-
-                <Button onAction="#enable2FA" text="Enable 2FA" />
-
+            <!-- ══ BACKUP / RESTORE  (ADMIN only) ═══════════════════════ -->
+            <VBox fx:id="backupSection"
+                  spacing="10"
+                  style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;">
+                <HBox alignment="CENTER_LEFT" spacing="8">
+                    <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Backup &amp; Restore" />
+                    <Label text="Admin only"
+                           style="-fx-font-size: 11px; -fx-text-fill: white; -fx-background-color: #f59e0b; -fx-padding: 2 8; -fx-background-radius: 10;" />
+                </HBox>
+                <Button onAction="#backupDatabase" text="Backup Database"
+                        style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-background-radius: 6;" />
+                <Button onAction="#restoreDatabase" text="Restore Database"
+                        style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-background-radius: 6;" />
             </VBox>
 
-            <!-- BACKUP SECTION -->
-            <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;">
-
-                <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Backup Restore" />
-
-                <Button onAction="#backupDatabase" text="Backup Database" />
-
-                <Button onAction="#restoreDatabase" text="Restore Database" />
-
-            </VBox>
-
-            <!-- SYSTEM ACTIONS -->
-            <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;">
-
-                <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="System Actions" />
-
-                <Button onAction="#clearCache" text="Clear Cache" />
-
-                <Button onAction="#resetSystem" style="-fx-background-color: #ef4444; -fx-text-fill: white;" text="Reset System" />
-
+            <!-- ══ SYSTEM ACTIONS  (ADMIN only) ═════════════════════════ -->
+            <VBox fx:id="systemActionsSection"
+                  spacing="10"
+                  style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;">
+                <HBox alignment="CENTER_LEFT" spacing="8">
+                    <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="System Actions" />
+                    <Label text="Admin only"
+                           style="-fx-font-size: 11px; -fx-text-fill: white; -fx-background-color: #f59e0b; -fx-padding: 2 8; -fx-background-radius: 10;" />
+                </HBox>
+                <Button onAction="#clearCache" text="Clear Cache"
+                        style="-fx-background-color: #64748b; -fx-text-fill: white; -fx-background-radius: 6;" />
+                <Button onAction="#resetSystem"
+                        style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-background-radius: 6;"
+                        text="Reset System" />
             </VBox>
 
         </VBox>
-
     </content>
 
 </ScrollPane>

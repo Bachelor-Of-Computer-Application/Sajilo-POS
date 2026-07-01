@@ -52,8 +52,10 @@
 
                         <!-- Product Selection (TextField with search) -->
                         <Label text="Product" style="-fx-font-size: 12px; -fx-text-fill: #64748b;"/>
-                        <TextField fx:id="productSearchField" promptText="Enter product name to search..."
+                        <TextField fx:id="productSearchField" promptText="Type to filter products..."
                                    style="-fx-pref-height: 35px;"/>
+                        <ComboBox fx:id="productCombo" prefWidth="300" promptText="Select product..."
+                                  style="-fx-pref-height: 35px;"/>
 
                         <!-- Purchase Price -->
                         <Label text="Purchase Price (Rs.)" style="-fx-font-size: 12px; -fx-text-fill: #64748b;"/>
