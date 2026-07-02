@@ -55,6 +55,9 @@ public class PurchaseHistoryController {
         purchaseHistoryObservable = FXCollections.observableArrayList();
         purchaseTable.setItems(purchaseHistoryObservable);
         loadPurchaseHistory();
+
+        // Live search: filter as user types
+        searchField.setOnKeyReleased(event -> handleSearch());
     }
 
     /**

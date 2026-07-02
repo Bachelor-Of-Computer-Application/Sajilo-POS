@@ -15,6 +15,33 @@ public class AuthService {
     private final SessionManager sessionManager = SessionManager.getInstance();
 
     /**
+     * Login with username and password only (no company code).
+     */
+    public boolean login(String username, String password) {
+        if (username == null || username.trim().isEmpty() ||
+            password == null || password.trim().isEmpty()) {
+            System.err.println("Username and password cannot be empty");
+            return false;
+        }
+
+        try {
+            User user = userDAO.loginByUsername(username, password);
+            if (user != null) {
+                sessionManager.setCurrentUser(user);
+                System.out.println("User logged in: " + username + " (" + user.getRole() + ")");
+                return true;
+            } else {
+                System.err.println("Login failed for user: " + username);
+                return false;
+            }
+        } catch (Exception e) {
+            System.err.println("Error during login: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
      * Login with company code, username, and password
      *
      * @param companyCode Company code (e.g., GPS001)

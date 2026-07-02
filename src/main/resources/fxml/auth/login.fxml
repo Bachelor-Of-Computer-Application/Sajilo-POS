@@ -67,14 +67,6 @@
                         </VBox.margin>
                     </Label>
 
-                    <!-- Company Code -->
-                    <Label style="-fx-font-size: 12px;                                   -fx-font-weight: bold;                                   -fx-text-fill: #374151;" text="Company Code">
-                        <VBox.margin><Insets bottom="6" /></VBox.margin>
-                    </Label>
-                    <TextField fx:id="companyCodeField" maxWidth="Infinity" prefHeight="42" promptText="e.g. GPS001" style="-fx-background-color: white;                                       -fx-border-color: #d1d5db;                                       -fx-border-width: 1;                                       -fx-border-radius: 6;                                       -fx-background-radius: 6;                                       -fx-font-size: 14px;                                       -fx-padding: 0 12 0 12;">
-                        <VBox.margin><Insets bottom="16" /></VBox.margin>
-                    </TextField>
-
                     <!-- Username -->
                     <Label style="-fx-font-size: 12px;                                   -fx-font-weight: bold;                                   -fx-text-fill: #374151;" text="Username">
                         <VBox.margin><Insets bottom="6" /></VBox.margin>

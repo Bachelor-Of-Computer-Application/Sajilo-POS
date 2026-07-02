@@ -14,13 +14,9 @@ import com.possystem.sajilopos.service.AuthService;
 import com.possystem.sajilopos.model.User;
 
 /**
- * LoginController - Handles company-based authentication
- * Requires: Company Code, Username, Password
+ * LoginController - Handles username/password authentication (no company code).
  */
 public class LoginController {
-
-    @FXML
-    private TextField companyCodeField;
 
     @FXML
     private TextField usernameField;
@@ -33,29 +29,18 @@ public class LoginController {
 
     @FXML
     public void handleLogin() {
-        String companyCode = companyCodeField.getText();
-        String username = usernameField.getText();
+        String username = usernameField.getText().trim();
         String password = passwordField.getText();
 
-        // Validate input
-        if (companyCode == null || companyCode.trim().isEmpty() ||
-            username == null || username.trim().isEmpty() ||
-            password == null || password.trim().isEmpty()) {
-            
-            showError("Validation Error", "All fields are required", 
-                     "Please enter company code, username, and password.");
+        if (username.isEmpty() || password.isEmpty()) {
+            showError("Validation Error", "Missing fields", "Please enter your username and password.");
             return;
         }
 
-        // Attempt login
-        if (authService.login(companyCode, username, password)) {
+        if (authService.login(username, password)) {
             User user = sessionManager.getCurrentUser();
-            
             try {
-                // Role-based navigation
-                String dashboardPath = getDashboardPath(user.getRole());
-                
-                FXMLLoader loader = new FXMLLoader(getClass().getResource(dashboardPath));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/dashboard/dashboard.fxml"));
                 Parent root = loader.load();
 
                 Stage stage = (Stage) usernameField.getScene().getWindow();
@@ -67,25 +52,11 @@ public class LoginController {
                 e.printStackTrace();
                 showError("Error", "Failed to load dashboard", e.getMessage());
             }
-
         } else {
-            showError("Login Failed", "Invalid Credentials", 
-                     "Company code, username, or password is incorrect.");
+            showError("Login Failed", "Invalid Credentials", "Username or password is incorrect.");
         }
     }
 
-    /**
-     * Get dashboard path based on user role
-     */
-    private String getDashboardPath(String role) {
-        // All roles use the same dashboard for now
-        // You can customize this for different role-based dashboards
-        return "/fxml/dashboard/dashboard.fxml";
-    }
-
-    /**
-     * Show error alert
-     */
     private void showError(String title, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);

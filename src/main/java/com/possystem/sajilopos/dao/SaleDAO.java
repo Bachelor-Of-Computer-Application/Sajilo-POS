@@ -84,6 +84,43 @@ public class SaleDAO {
     }
 
     /**
+     * Get the N most recent sales for a company (for the dashboard)
+     */
+    public List<Sale> getRecentSales(int companyId, int limit) {
+        List<Sale> sales = new ArrayList<>();
+        String sql = "SELECT * FROM sales WHERE company_id = ? ORDER BY sale_date DESC LIMIT ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, companyId);
+            stmt.setInt(2, limit);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Sale sale = new Sale(
+                        rs.getInt("sale_id"),
+                        rs.getInt("company_id"),
+                        rs.getInt("customer_id"),
+                        rs.getString("invoice_no"),
+                        rs.getDouble("total_amount"),
+                        rs.getDouble("discount_amount"),
+                        rs.getDouble("final_amount"),
+                        rs.getString("payment_method"),
+                        rs.getDouble("amount_paid"),
+                        rs.getDouble("change_amount"),
+                        rs.getInt("sold_by"),
+                        rs.getTimestamp("sale_date")
+                    );
+                    sales.add(sale);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error fetching recent sales: " + e.getMessage());
+        }
+        return sales;
+    }
+
+    /**
      * Get all sales for a company
      */
     public List<Sale> getSalesByCompany(int companyId) {
