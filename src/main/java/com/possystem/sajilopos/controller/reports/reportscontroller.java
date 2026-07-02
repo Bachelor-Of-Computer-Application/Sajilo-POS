@@ -17,7 +17,7 @@ import javafx.scene.transform.Scale;
 
 import java.time.LocalDate;
 
-public class ReportsController {
+public class reportscontroller {
 
     // ==================== FXML Components ====================
 
@@ -289,7 +289,7 @@ public class ReportsController {
         private final SimpleDoubleProperty profit;
 
         public ProductPerformanceRow(String productName, int qtyPurchased, double purchaseAmount,
-                int qtySold, double salesAmount) {
+                                     int qtySold, double salesAmount) {
             this.productName = new SimpleStringProperty(productName);
             this.qtyPurchased = new SimpleIntegerProperty(qtyPurchased);
             this.purchaseAmount = new SimpleDoubleProperty(purchaseAmount);
