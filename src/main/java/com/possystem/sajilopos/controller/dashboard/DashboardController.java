@@ -67,13 +67,13 @@ public class DashboardController {
             setHidden(suppliersMenu);
             setHidden(reportsMenu);
             setHidden(usersMenu);
-            setHidden(settingsMenu);
+            // Settings stays visible — cashiers need to change their own password
         }
 
-        // MANAGER: everything except Users and Settings
+        // MANAGER: everything except Users and Settings (settings for password change)
         if (session.isManager()) {
             setHidden(usersMenu);
-            setHidden(settingsMenu);
+            // Settings stays visible — managers need to change their own password
         }
 
         // ADMIN: sees everything — no changes needed
