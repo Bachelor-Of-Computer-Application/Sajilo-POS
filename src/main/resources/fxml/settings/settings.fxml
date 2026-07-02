@@ -13,14 +13,59 @@
     <content>
         <VBox spacing="24" style="-fx-padding: 28;">
 
-            <!-- PAGE TITLE -->
-            <Label text="Settings"
-                   style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #0f172a;"/>
+            <!-- PAGE TITLE + SESSION BADGE -->
+            <HBox alignment="CENTER_LEFT" spacing="16">
+                <Label text="Settings"
+                       style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #0f172a;"/>
+                <Label fx:id="sessionInfoLabel"
+                       style="-fx-font-size: 12px; -fx-text-fill: #475569;
+                              -fx-background-color: #e2e8f0; -fx-background-radius: 20;
+                              -fx-padding: 4 12 4 12;"/>
+            </HBox>
 
-            <!-- CARD 1: Create New User -->
-            <VBox spacing="14"
-                  style="-fx-background-color: white;
-                         -fx-padding: 24;
+            <!-- ══ CARD: Change Own Password  (ALL roles) ═══════════════ -->
+            <VBox fx:id="changePasswordCard" spacing="14"
+                  style="-fx-background-color: white; -fx-padding: 24;
+                         -fx-background-radius: 10;
+                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 2);">
+
+                <Label text="Change My Password"
+                       style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
+                <Separator/>
+
+                <Label text="Current Password"
+                       style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;"/>
+                <PasswordField fx:id="currentPasswordField" promptText="Enter current password" prefHeight="40"
+                               style="-fx-background-color: #f8fafc; -fx-border-color: #d1d5db;
+                                      -fx-border-width: 1; -fx-border-radius: 6; -fx-background-radius: 6;
+                                      -fx-padding: 0 12 0 12;"/>
+
+                <Label text="New Password"
+                       style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;"/>
+                <PasswordField fx:id="newOwnPasswordField" promptText="New password (min 6 chars)" prefHeight="40"
+                               style="-fx-background-color: #f8fafc; -fx-border-color: #d1d5db;
+                                      -fx-border-width: 1; -fx-border-radius: 6; -fx-background-radius: 6;
+                                      -fx-padding: 0 12 0 12;"/>
+
+                <Label text="Confirm New Password"
+                       style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;"/>
+                <PasswordField fx:id="confirmPasswordField" promptText="Re-enter new password" prefHeight="40"
+                               style="-fx-background-color: #f8fafc; -fx-border-color: #d1d5db;
+                                      -fx-border-width: 1; -fx-border-radius: 6; -fx-background-radius: 6;
+                                      -fx-padding: 0 12 0 12;"/>
+
+                <Button text="Change Password" onAction="#changeOwnPassword" prefHeight="40"
+                        style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-size: 13px;
+                               -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand;">
+                    <VBox.margin><Insets top="4"/></VBox.margin>
+                </Button>
+
+                <Label fx:id="passwordStatusLabel" style="-fx-font-size: 12px;"/>
+            </VBox>
+
+            <!-- ══ CARD: Create New User  (ADMIN only) ══════════════════ -->
+            <VBox fx:id="createUserCard" spacing="14"
+                  style="-fx-background-color: white; -fx-padding: 24;
                          -fx-background-radius: 10;
                          -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 2);">
 
@@ -32,7 +77,6 @@
                            style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #b45309;
                                   -fx-background-color: #fef3c7; -fx-background-radius: 20; -fx-padding: 3 10 3 10;"/>
                 </HBox>
-
                 <Separator/>
 
                 <Label text="Role" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;"/>
@@ -57,15 +101,12 @@
                                -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand;">
                     <VBox.margin><Insets top="4"/></VBox.margin>
                 </Button>
-
                 <Label fx:id="createStatusLabel" style="-fx-font-size: 12px;"/>
-
             </VBox>
 
-            <!-- CARD 2: Manage Users -->
-            <VBox spacing="14"
-                  style="-fx-background-color: white;
-                         -fx-padding: 24;
+            <!-- ══ CARD: Manage Users  (ADMIN only) ═════════════════════ -->
+            <VBox fx:id="manageUsersCard" spacing="14"
+                  style="-fx-background-color: white; -fx-padding: 24;
                          -fx-background-radius: 10;
                          -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 2);">
 
@@ -77,7 +118,6 @@
                            style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #b45309;
                                   -fx-background-color: #fef3c7; -fx-background-radius: 20; -fx-padding: 3 10 3 10;"/>
                 </HBox>
-
                 <Separator/>
 
                 <TableView fx:id="usersTable" prefHeight="220"
@@ -94,19 +134,18 @@
                 </TableView>
 
                 <HBox spacing="10">
-                    <Button text="Edit User" onAction="#onEditUser" prefHeight="36"
+                    <Button text="Edit User"        onAction="#onEditUser"       prefHeight="36"
                             style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-weight: bold;
                                    -fx-background-radius: 6; -fx-cursor: hand; -fx-padding: 0 16 0 16;"/>
-                    <Button text="Change Password" onAction="#onChangePassword" prefHeight="36"
+                    <Button text="Reset Password"   onAction="#onChangePassword" prefHeight="36"
                             style="-fx-background-color: #f59e0b; -fx-text-fill: white; -fx-font-weight: bold;
                                    -fx-background-radius: 6; -fx-cursor: hand; -fx-padding: 0 16 0 16;"/>
-                    <Button text="Delete User" onAction="#onDeleteUser" prefHeight="36"
+                    <Button text="Delete User"      onAction="#onDeleteUser"     prefHeight="36"
                             style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold;
                                    -fx-background-radius: 6; -fx-cursor: hand; -fx-padding: 0 16 0 16;"/>
                 </HBox>
 
                 <Label fx:id="manageStatusLabel" style="-fx-font-size: 12px;"/>
-
             </VBox>
 
         </VBox>
