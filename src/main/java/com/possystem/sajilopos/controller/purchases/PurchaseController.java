@@ -12,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PurchaseController {
 
@@ -23,6 +24,10 @@ public class PurchaseController {
 
     @FXML
     private TextField productSearchField;
+
+    // NEW: live-filtered product dropdown
+    @FXML
+    private ComboBox<Product> productCombo;
 
     @FXML
     private TextField purchasePriceField;
@@ -133,18 +138,51 @@ public class PurchaseController {
     }
 
     /**
-     * Setup product search field with real-time filtering
+     * Setup product search field with real-time filtering into productCombo
      */
     private void setupProductSearch() {
-        productSearchField.setOnKeyReleased(event -> {
-            String searchText = productSearchField.getText().trim();
-            if (searchText.isEmpty()) {
-                productSearchField.setStyle("-fx-border-color: #cbd5e1; -fx-border-width: 1;");
-            } else {
-                // Visual feedback for search
-                productSearchField.setStyle("-fx-border-color: #3b82f6; -fx-border-width: 2;");
+        // Populate combo with all products initially
+        refreshProductCombo("");
+
+        // Set display for combo
+        productCombo.setCellFactory(param -> new ListCell<Product>() {
+            @Override
+            protected void updateItem(Product item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? "" :
+                        item.getProductName() + "  (Stock: " + item.getStock() + ")");
             }
         });
+        productCombo.setButtonCell(new ListCell<Product>() {
+            @Override
+            protected void updateItem(Product item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? "" : item.getProductName());
+            }
+        });
+
+        // Filter combo as user types in the search field
+        productSearchField.setOnKeyReleased(event -> {
+            String text = productSearchField.getText().trim();
+            refreshProductCombo(text);
+            if (!productCombo.isShowing() && !text.isEmpty()) {
+                productCombo.show();
+            }
+        });
+
+        // When a product is picked from the combo, clear the search hint border
+        productCombo.setOnAction(event -> {
+            productSearchField.setStyle("");
+        });
+    }
+
+    private void refreshProductCombo(String filter) {
+        if (allProducts == null) return;
+        List<Product> filtered = allProducts.stream()
+                .filter(p -> filter.isEmpty() ||
+                        p.getProductName().toLowerCase().contains(filter.toLowerCase()))
+                .collect(Collectors.toList());
+        productCombo.setItems(FXCollections.observableArrayList(filtered));
     }
 
     /**
@@ -157,9 +195,25 @@ public class PurchaseController {
             return;
         }
 
-        String productName = productSearchField.getText().trim();
-        if (productName.isEmpty()) {
-            showError("Please enter a product name");
+        // Use selected product from combo; fall back to name search if nothing selected
+        Product selectedProduct = productCombo.getSelectionModel().getSelectedItem();
+        if (selectedProduct == null) {
+            String productName = productSearchField.getText().trim();
+            if (productName.isEmpty()) {
+                showError("Please select or search for a product");
+                return;
+            }
+            // Try to find by exact name as fallback
+            for (Product p : allProducts) {
+                if (p.getProductName().equalsIgnoreCase(productName)) {
+                    selectedProduct = p;
+                    break;
+                }
+            }
+        }
+
+        if (selectedProduct == null) {
+            showError("Product not found. Please select from the dropdown.");
             return;
         }
 
@@ -177,20 +231,6 @@ public class PurchaseController {
                 return;
             }
 
-            // Search for product by name (case-insensitive)
-            Product selectedProduct = null;
-            for (Product product : allProducts) {
-                if (product.getProductName().equalsIgnoreCase(productName)) {
-                    selectedProduct = product;
-                    break;
-                }
-            }
-
-            if (selectedProduct == null) {
-                showError("Product '" + productName + "' not found. Please check the name.");
-                return;
-            }
-
             // Check if product already exists
             for (PurchaseItem item : currentPurchase.getItems()) {
                 if (item.getProductId() == selectedProduct.getProductId()) {
@@ -199,9 +239,9 @@ public class PurchaseController {
                 }
             }
 
-            purchaseService.addItemToPurchase(currentPurchase, 
-                selectedProduct.getProductId(), 
-                purchasePrice, 
+            purchaseService.addItemToPurchase(currentPurchase,
+                selectedProduct.getProductId(),
+                purchasePrice,
                 quantity);
 
             itemsObservable.setAll(currentPurchase.getItems());
@@ -209,7 +249,8 @@ public class PurchaseController {
 
             // Clear input fields
             productSearchField.clear();
-            productSearchField.setStyle("-fx-border-color: #cbd5e1; -fx-border-width: 1;");
+            productCombo.getSelectionModel().clearSelection();
+            refreshProductCombo("");
             purchasePriceField.clear();
             quantityField.clear();
 
@@ -281,7 +322,8 @@ public class PurchaseController {
     private void handleClear() {
         supplierCombo.getSelectionModel().clearSelection();
         productSearchField.clear();
-        productSearchField.setStyle("-fx-border-color: #cbd5e1; -fx-border-width: 1;");
+        productCombo.getSelectionModel().clearSelection();
+        refreshProductCombo("");
         invoiceField.clear();
         purchasePriceField.clear();
         quantityField.clear();

@@ -1,41 +1,186 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<BorderPane xmlns="http://javafx.com/javafx/17"
-            xmlns:fx="http://javafx.com/fxml/1"
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.possystem.sajilopos.controller.reports.reportscontroller"
-            style="-fx-background-color: #f4f6f9;">
+            prefWidth="1400" prefHeight="900"
+            style="-fx-background-color: #f1f5f9;">
 
+    <!-- TOP HEADER -->
     <top>
-        <VBox spacing="10" style="-fx-padding: 15; -fx-background-color: white;">
-            <Label text="Reports Dashboard"
-                   style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
+        <VBox style="-fx-background-color: white; -fx-border-color: #e2e8f0;">
+            <children>
+                <!-- Title -->
+                <HBox prefHeight="70" style="-fx-padding: 20;">
+                    <Label text="REPORTS"
+                           style="-fx-font-size: 28px; -fx-font-weight: bold;">
+                        <HBox.margin>
+                            <Insets left="10"/>
+                        </HBox.margin>
+                    </Label>
+                </HBox>
 
-            <HBox spacing="10">
-                <TextField fx:id="searchField" promptText="Search reports..."/>
-                <Button text="Filter" onAction="#onFilter"/>
-            </HBox>
+                <Separator style="-fx-padding: 0;"/>
+
+                <!-- Period Selection and Date Picker -->
+                <HBox spacing="30" style="-fx-padding: 20; -fx-background-color: #f8fafc;">
+                    <children>
+                        <!-- Period Selection -->
+                        <VBox spacing="10">
+                            <Label text="Period:" style="-fx-font-size: 13px; -fx-text-fill: #64748b;"/>
+                            <HBox spacing="20">
+                                <RadioButton fx:id="radioDailyPeriod" text="Daily"
+                                            style="-fx-font-size: 12px;"/>
+                                <RadioButton fx:id="radioWeeklyPeriod" text="Weekly"
+                                            style="-fx-font-size: 12px;"/>
+                                <RadioButton fx:id="radioMonthlyPeriod" text="Monthly"
+                                            style="-fx-font-size: 12px;"/>
+                                <RadioButton fx:id="radioYearlyPeriod" text="Yearly"
+                                            style="-fx-font-size: 12px;"/>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Date Picker -->
+                        <VBox spacing="10">
+                            <Label text="Date:" style="-fx-font-size: 13px; -fx-text-fill: #64748b;"/>
+                            <DatePicker fx:id="datePicker" prefWidth="150"
+                                       style="-fx-pref-height: 35px;"/>
+                        </VBox>
+
+                        <!-- Generate Button -->
+                        <VBox style="-fx-alignment: bottom-left;">
+                            <Button fx:id="generateButton" text="Generate Report" onAction="#onGenerateReport"
+                                   prefWidth="140" prefHeight="40"
+                                   style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold;"/>
+                        </VBox>
+
+                        <Region HBox.hgrow="ALWAYS"/>
+
+                        <!-- Action Buttons -->
+                        <HBox spacing="10" style="-fx-alignment: bottom-right;">
+                            <Button fx:id="printButton" text="Print Report" onAction="#onPrintReport"
+                                   prefWidth="110" prefHeight="40"
+                                   style="-fx-background-color: #8b5cf6; -fx-text-fill: white; -fx-font-size: 13px;"/>
+                            <Button fx:id="refreshButton" text="Refresh" onAction="#onRefresh"
+                                   prefWidth="100" prefHeight="40"
+                                   style="-fx-background-color: #10b981; -fx-text-fill: white; -fx-font-size: 13px;"/>
+                        </HBox>
+                    </children>
+                </HBox>
+            </children>
         </VBox>
     </top>
 
+    <!-- CENTER CONTENT (SCROLLABLE) -->
     <center>
-        <TableView fx:id="reportsTable">
-            <columns>
-                <TableColumn fx:id="colDate" text="Date" prefWidth="120"/>
-                <TableColumn fx:id="colSales" text="Total Sales" prefWidth="120"/>
-                <TableColumn fx:id="colItems" text="Items Sold" prefWidth="120"/>
-                <TableColumn fx:id="colProfit" text="Profit" prefWidth="120"/>
-            </columns>
-        </TableView>
-    </center>
+        <ScrollPane style="-fx-background-color: #f1f5f9; -fx-padding: 0;" fitToWidth="true">
+            <VBox fx:id="reportContent" spacing="20" style="-fx-padding: 20; -fx-background-color: #f1f5f9;">
+                <children>
 
-    <bottom>
-        <HBox spacing="10" style="-fx-padding: 15; -fx-background-color: white;">
-            <Button text="Refresh" onAction="#onRefresh"/>
-            <Button text="Export" onAction="#onExport"/>
-        </HBox>
-    </bottom>
+                    <!-- ============ SUMMARY REPORT SECTION ============ -->
+                    <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 20; -fx-border-radius: 8; -fx-border-color: #e2e8f0;">
+                        <children>
+                            <Label text="SUMMARY REPORT"
+                                   style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
+
+                            <Separator style="-fx-padding: 5 0;"/>
+
+                            <!-- Summary Metrics Grid -->
+                            <GridPane hgap="20" vgap="15">
+                                <columnConstraints>
+                                    <ColumnConstraints percentWidth="25"/>
+                                    <ColumnConstraints percentWidth="25"/>
+                                    <ColumnConstraints percentWidth="25"/>
+                                    <ColumnConstraints percentWidth="25"/>
+                                </columnConstraints>
+                                <rowConstraints>
+                                    <RowConstraints/>
+                                </rowConstraints>
+
+                                <!-- Total Sales -->
+                                <VBox spacing="8" style="-fx-padding: 15; -fx-background-color: #eff6ff; -fx-border-radius: 6; -fx-border-color: #bfdbfe;" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                    <Label text="Total Sales" style="-fx-font-size: 12px; -fx-text-fill: #64748b;"/>
+                                    <Label fx:id="lblTotalSales" text="Rs. 0.00"
+                                           style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #3b82f6;"/>
+                                </VBox>
+
+                                <!-- Total Purchases -->
+                                <VBox spacing="8" style="-fx-padding: 15; -fx-background-color: #fef2f2; -fx-border-radius: 6; -fx-border-color: #fecaca;" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                    <Label text="Total Purchases" style="-fx-font-size: 12px; -fx-text-fill: #64748b;"/>
+                                    <Label fx:id="lblTotalPurchases" text="Rs. 0.00"
+                                           style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #ef4444;"/>
+                                </VBox>
+
+                                <!-- Profit -->
+                                <VBox spacing="8" style="-fx-padding: 15; -fx-background-color: #f0fdf4; -fx-border-radius: 6; -fx-border-color: #bbf7d0;" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                                    <Label text="Profit" style="-fx-font-size: 12px; -fx-text-fill: #64748b;"/>
+                                    <Label fx:id="lblProfit" text="Rs. 0.00"
+                                           style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #10b981;"/>
+                                </VBox>
+
+                                <!-- Total Transactions -->
+                                <VBox spacing="8" style="-fx-padding: 15; -fx-background-color: #fef3c7; -fx-border-radius: 6; -fx-border-color: #fde68a;" GridPane.columnIndex="3" GridPane.rowIndex="0">
+                                    <Label text="Transactions" style="-fx-font-size: 12px; -fx-text-fill: #64748b;"/>
+                                    <Label fx:id="lblTotalTransactions" text="0"
+                                           style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #f59e0b;"/>
+                                </VBox>
+                            </GridPane>
+
+                            <Separator style="-fx-padding: 5 0;"/>
+
+                            <!-- Products Information -->
+                            <HBox spacing="20">
+                                <Label fx:id="lblProductsInfo" text="Purchased: 0 | Sold: 0"
+                                       style="-fx-font-size: 12px; -fx-text-fill: #475569;"/>
+                            </HBox>
+                        </children>
+                    </VBox>
+
+                    <!-- ============ PRODUCT PERFORMANCE REPORT SECTION ============ -->
+                    <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 20; -fx-border-radius: 8; -fx-border-color: #e2e8f0;">
+                        <children>
+                            <Label text="PRODUCT PERFORMANCE REPORT"
+                                   style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
+
+                            <Separator style="-fx-padding: 5 0;"/>
+
+                            <!-- Product Table -->
+                            <TableView fx:id="productTable" prefHeight="300" style="-fx-background-color: white;">
+                                <columns>
+                                    <TableColumn fx:id="colProductName" text="Product" prefWidth="200" style="-fx-alignment: CENTER-LEFT;"/>
+                                    <TableColumn fx:id="colQtyPurchased" text="Qty Purchased" prefWidth="120" style="-fx-alignment: CENTER;"/>
+                                    <TableColumn fx:id="colPurchaseAmount" text="Purchase Amount" prefWidth="140" style="-fx-alignment: CENTER-RIGHT;"/>
+                                    <TableColumn fx:id="colQtySold" text="Qty Sold" prefWidth="110" style="-fx-alignment: CENTER;"/>
+                                    <TableColumn fx:id="colSalesAmount" text="Sales Amount" prefWidth="130" style="-fx-alignment: CENTER-RIGHT;"/>
+                                    <TableColumn fx:id="colProfit" text="Profit" prefWidth="120" style="-fx-alignment: CENTER-RIGHT;"/>
+                                </columns>
+                                <columnResizePolicy>
+                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                                </columnResizePolicy>
+                            </TableView>
+
+                            <Separator style="-fx-padding: 5 0;"/>
+
+                            <!-- Total Product Profit -->
+                            <HBox spacing="10" style="-fx-padding: 10; -fx-background-color: #f0fdf4; -fx-border-radius: 6;">
+                                <Label text="TOTAL PRODUCT PROFIT:"
+                                       style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
+                                <Label fx:id="lblTotalProductProfit" text="Rs. 0.00"
+                                       style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #10b981;"/>
+                            </HBox>
+                        </children>
+                    </VBox>
+
+                    <!-- Spacing at bottom -->
+                    <Region VBox.vgrow="ALWAYS"/>
+
+                </children>
+            </VBox>
+        </ScrollPane>
+    </center>
 
 </BorderPane>

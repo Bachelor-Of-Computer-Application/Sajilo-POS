@@ -4,60 +4,87 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="500.0" prefWidth="800.0"
-            xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.possystem.sajilopos.controller.auth.LoginController">
+<AnchorPane prefHeight="520.0" prefWidth="860.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.possystem.sajilopos.controller.auth.LoginController">
 
     <children>
 
-        <HBox prefHeight="500.0" prefWidth="800.0">
+        <HBox prefHeight="520.0" prefWidth="860.0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
 
-            <!-- LEFT PANEL -->
-            <VBox alignment="CENTER" prefWidth="400"
-                  style="-fx-background-color: linear-gradient(to bottom right, #4facfe, #00f2fe);">
+            <!-- LEFT BRAND PANEL -->
+            <VBox alignment="CENTER" prefWidth="380" spacing="12" style="-fx-background-color: linear-gradient(to bottom right, #1e3a5f, #2563eb);">
+
+                <padding>
+                    <Insets bottom="60" left="40" right="40" top="60" />
+                </padding>
 
                 <children>
-                    <Label style="-fx-font-size: 35px; -fx-font-weight: bold; -fx-text-fill: white;" 
-                           text="SAJILO POS" />
-                    <Label style="-fx-text-fill: white; -fx-font-size: 16px;" 
-                           text="General POS System" />
+
+                    <Label style="-fx-font-size: 38px;                                   -fx-font-weight: bold;                                   -fx-text-fill: white;" text="SAJILO POS" />
+               <ImageView fitHeight="284.0" fitWidth="396.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@../../image/pos-illustration.png" />
+                  </image>
+               </ImageView>
+
+                    <Region prefHeight="20" />
+
+                    <Label style="-fx-font-size: 15px;                                   -fx-text-fill: #93c5fd;" text="General POS System" />
+
+                    <Separator style="-fx-background-color: rgba(255,255,255,0.2);" />
+
+                    <Label style="-fx-font-size: 13px;                                   -fx-text-fill: #bfdbfe;                                   -fx-text-alignment: center;" text="Manage your business with ease." wrapText="true" />
+
+                    <Label style="-fx-font-size: 12px;                                   -fx-text-fill: rgba(255,255,255,0.5);" text="Sales · Inventory · Reports · Users" />
+
                 </children>
 
             </VBox>
 
-            <!-- RIGHT PANEL -->
-            <VBox alignment="CENTER" prefWidth="400" spacing="15">
+            <!-- RIGHT LOGIN PANEL -->
+            <VBox alignment="CENTER" spacing="0" style="-fx-background-color: #f8fafc;" HBox.hgrow="ALWAYS">
 
                 <padding>
-                    <Insets bottom="40" left="40" right="40" top="40" />
+                    <Insets bottom="60" left="60" right="60" top="60" />
                 </padding>
 
                 <children>
-                    <Label style="-fx-font-size: 28px; -fx-font-weight: bold;" 
-                           text="Login" />
 
-                    <TextField fx:id="companyCodeField" 
-                              prefWidth="250" 
-                              promptText="Company Code (e.g., GPS001)" />
+                    <!-- Header -->
+                    <Label style="-fx-font-size: 26px;                                   -fx-font-weight: bold;                                   -fx-text-fill: #0f172a;" text="Welcome back" />
 
-                    <TextField fx:id="usernameField" 
-                              prefWidth="250" 
-                              promptText="Username" />
+                    <Label style="-fx-font-size: 14px;                                   -fx-text-fill: #64748b;" text="Sign in to your account">
+                        <VBox.margin>
+                            <Insets bottom="32" top="4" />
+                        </VBox.margin>
+                    </Label>
 
-                    <PasswordField fx:id="passwordField" 
-                                  prefWidth="250" 
-                                  promptText="Password" />
+                    <!-- Username -->
+                    <Label style="-fx-font-size: 12px;                                   -fx-font-weight: bold;                                   -fx-text-fill: #374151;" text="Username">
+                        <VBox.margin><Insets bottom="6" /></VBox.margin>
+                    </Label>
+                    <TextField fx:id="usernameField" maxWidth="Infinity" prefHeight="42" promptText="Enter your username" style="-fx-background-color: white;                                       -fx-border-color: #d1d5db;                                       -fx-border-width: 1;                                       -fx-border-radius: 6;                                       -fx-background-radius: 6;                                       -fx-font-size: 14px;                                       -fx-padding: 0 12 0 12;">
+                        <VBox.margin><Insets bottom="16" /></VBox.margin>
+                    </TextField>
 
-                    <Button onAction="#handleLogin" 
-                           prefWidth="250" 
-                           style="-fx-background-color: #4facfe; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;" 
-                           text="Login" />
+                    <!-- Password -->
+                    <Label style="-fx-font-size: 12px;                                   -fx-font-weight: bold;                                   -fx-text-fill: #374151;" text="Password">
+                        <VBox.margin><Insets bottom="6" /></VBox.margin>
+                    </Label>
+                    <PasswordField fx:id="passwordField" maxWidth="Infinity" prefHeight="42" promptText="Enter your password" style="-fx-background-color: white;                                           -fx-border-color: #d1d5db;                                           -fx-border-width: 1;                                           -fx-border-radius: 6;                                           -fx-background-radius: 6;                                           -fx-font-size: 14px;                                           -fx-padding: 0 12 0 12;">
+                        <VBox.margin><Insets bottom="28" /></VBox.margin>
+                    </PasswordField>
+
+                    <!-- Login Button -->
+                    <Button maxWidth="Infinity" onAction="#handleLogin" prefHeight="44" style="-fx-background-color: #2563eb;                                    -fx-text-fill: white;                                    -fx-font-size: 15px;                                    -fx-font-weight: bold;                                    -fx-background-radius: 6;                                    -fx-cursor: hand;" text="Sign In" />
 
                 </children>
 

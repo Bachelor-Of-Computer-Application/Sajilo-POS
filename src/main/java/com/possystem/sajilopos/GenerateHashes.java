@@ -23,13 +23,12 @@ public class GenerateHashes {
             String[] parts = userInfo.split(":");
             String username = parts[0];
             String password = parts[1];
-            String role = parts[2];
+            // String role = parts[2];  // Role info stored in database directly
 
             String hash = BCrypt.hashpw(password, BCrypt.gensalt(10));
             
             System.out.println("Username: " + username);
             System.out.println("Password: " + password);
-            System.out.println("Role: " + role);
             System.out.println("Hash: " + hash);
             System.out.println();
         }
@@ -44,7 +43,6 @@ public class GenerateHashes {
             String[] parts = userInfo.split(":");
             String username = parts[0];
             String password = parts[1];
-            String role = parts[2];
 
             String hash = BCrypt.hashpw(password, BCrypt.gensalt(10));
             

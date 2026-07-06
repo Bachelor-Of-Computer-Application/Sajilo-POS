@@ -18,6 +18,46 @@ import java.util.List;
 public class UserDAO {
 
     /**
+     * Login with username and password only (no company code required).
+     * Uses BCrypt password verification.
+     */
+    public User loginByUsername(String username, String password) {
+        String sql = "SELECT user_id, company_id, username, password_hash, role, created_at " +
+                     "FROM users WHERE username = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, username);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                String storedHash = rs.getString("password_hash");
+                if (BCrypt.checkpw(password, storedHash)) {
+                    return new User(
+                            rs.getInt("user_id"),
+                            rs.getInt("company_id"),
+                            rs.getString("username"),
+                            rs.getString("password_hash"),
+                            rs.getString("role"),
+                            rs.getTimestamp("created_at").toLocalDateTime()
+                    );
+                } else {
+                    System.err.println("Password verification failed for user: " + username);
+                }
+            } else {
+                System.err.println("User not found: " + username);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error during login: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
      * Login with company code, username, and password
      * Uses BCrypt password verification
      *
@@ -158,7 +198,7 @@ public class UserDAO {
     }
 
     /**
-     * Update user information
+     * Update user information (username + role) — admin use
      */
     public boolean updateUser(User user) {
         String sql = "UPDATE users SET username = ?, role = ? WHERE user_id = ?";
@@ -174,6 +214,73 @@ public class UserDAO {
 
         } catch (SQLException e) {
             System.err.println("Error updating user: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    /**
+     * Update only the password hash for a given user
+     */
+    public boolean updatePassword(int userId, String newPasswordHash) {
+        String sql = "UPDATE users SET password_hash = ? WHERE user_id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, newPasswordHash);
+            stmt.setInt(2, userId);
+
+            return stmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Error updating password: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    /**
+     * Update username and password hash together — self-service account update
+     */
+    public boolean updateOwnAccount(int userId, String newUsername, String newPasswordHash) {
+        String sql = "UPDATE users SET username = ?, password_hash = ? WHERE user_id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, newUsername);
+            stmt.setString(2, newPasswordHash);
+            stmt.setInt(3, userId);
+
+            return stmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Error updating own account: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    /**
+     * Update only the role for a given user — admin use
+     */
+    public boolean updateRole(int userId, String newRole) {
+        String sql = "UPDATE users SET role = ? WHERE user_id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, newRole);
+            stmt.setInt(2, userId);
+
+            return stmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Error updating role: " + e.getMessage());
             e.printStackTrace();
         }
 
