@@ -15,7 +15,9 @@ public class ProductDAO {
     public List<Product> getAllProducts(int companyId) {
         List<Product> products = new ArrayList<>();
         String sql = "SELECT product_id, company_id, product_name, price, stock, description, " +
-                     "active, created_at, updated_at, minimum_stock FROM products WHERE company_id = ? AND active = 1";
+                     "active, created_at, updated_at, minimum_stock, " +
+                     "COALESCE(category_id, 0) AS category_id " +
+                     "FROM products WHERE company_id = ? AND active = 1";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -34,7 +36,8 @@ public class ProductDAO {
                         rs.getBoolean("active"),
                         rs.getTimestamp("created_at"),
                         rs.getTimestamp("updated_at"),
-                        rs.getInt("minimum_stock")
+                        rs.getInt("minimum_stock"),
+                        rs.getInt("category_id")
                 ));
             }
         } catch (SQLException e) {
@@ -49,7 +52,9 @@ public class ProductDAO {
      */
     public Product getProductById(int productId) {
         String sql = "SELECT product_id, company_id, product_name, price, stock, description, " +
-                     "active, created_at, updated_at, minimum_stock FROM products WHERE product_id = ?";
+                     "active, created_at, updated_at, minimum_stock, " +
+                     "COALESCE(category_id, 0) AS category_id " +
+                     "FROM products WHERE product_id = ?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -68,7 +73,8 @@ public class ProductDAO {
                         rs.getBoolean("active"),
                         rs.getTimestamp("created_at"),
                         rs.getTimestamp("updated_at"),
-                        rs.getInt("minimum_stock")
+                        rs.getInt("minimum_stock"),
+                        rs.getInt("category_id")
                 );
             }
         } catch (SQLException e) {
@@ -82,19 +88,24 @@ public class ProductDAO {
      * Add a new product
      */
     public boolean addProduct(Product product) {
-        String sql = "INSERT INTO products (company_id, product_name, price, stock, description, active) " +
-                     "VALUES (?, ?, ?, ?, ?, ?)";
-        
+        String sql = "INSERT INTO products (company_id, product_name, price, stock, description, active, category_id) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, ?)";
+
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+
             stmt.setInt(1, product.getCompanyId());
             stmt.setString(2, product.getProductName());
             stmt.setDouble(3, product.getPrice());
             stmt.setInt(4, product.getStock());
             stmt.setString(5, product.getDescription());
             stmt.setBoolean(6, product.isActive());
-            
+            if (product.getCategoryId() > 0) {
+                stmt.setInt(7, product.getCategoryId());
+            } else {
+                stmt.setNull(7, java.sql.Types.INTEGER);
+            }
+
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             System.err.println("Error adding product: " + e.getMessage());
@@ -107,19 +118,24 @@ public class ProductDAO {
      * Update an existing product
      */
     public boolean updateProduct(Product product) {
-        String sql = "UPDATE products SET product_name = ?, price = ?, stock = ?, description = ? " +
+        String sql = "UPDATE products SET product_name = ?, price = ?, stock = ?, description = ?, category_id = ? " +
                      "WHERE product_id = ? AND company_id = ?";
-        
+
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+
             stmt.setString(1, product.getProductName());
             stmt.setDouble(2, product.getPrice());
             stmt.setInt(3, product.getStock());
             stmt.setString(4, product.getDescription());
-            stmt.setInt(5, product.getProductId());
-            stmt.setInt(6, product.getCompanyId());
-            
+            if (product.getCategoryId() > 0) {
+                stmt.setInt(5, product.getCategoryId());
+            } else {
+                stmt.setNull(5, java.sql.Types.INTEGER);
+            }
+            stmt.setInt(6, product.getProductId());
+            stmt.setInt(7, product.getCompanyId());
+
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             System.err.println("Error updating product: " + e.getMessage());
@@ -174,16 +190,17 @@ public class ProductDAO {
     public List<Product> searchProductByName(String name, int companyId) {
         List<Product> products = new ArrayList<>();
         String sql = "SELECT product_id, company_id, product_name, price, stock, description, " +
-                     "active, created_at, updated_at, minimum_stock FROM products " +
+                     "active, created_at, updated_at, minimum_stock, " +
+                     "COALESCE(category_id, 0) AS category_id FROM products " +
                      "WHERE product_name LIKE ? AND company_id = ? AND active = 1";
-        
+
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+
             stmt.setString(1, "%" + name + "%");
             stmt.setInt(2, companyId);
             ResultSet rs = stmt.executeQuery();
-            
+
             while (rs.next()) {
                 products.add(new Product(
                         rs.getInt("product_id"),
@@ -195,7 +212,8 @@ public class ProductDAO {
                         rs.getBoolean("active"),
                         rs.getTimestamp("created_at"),
                         rs.getTimestamp("updated_at"),
-                        rs.getInt("minimum_stock")
+                        rs.getInt("minimum_stock"),
+                        rs.getInt("category_id")
                 ));
             }
         } catch (SQLException e) {
@@ -232,7 +250,8 @@ public class ProductDAO {
     public List<Product> getLowStockProducts(int companyId) {
         List<Product> products = new ArrayList<>();
         String sql = "SELECT product_id, company_id, product_name, price, stock, description, " +
-                     "active, created_at, updated_at, minimum_stock FROM products " +
+                     "active, created_at, updated_at, minimum_stock, " +
+                     "COALESCE(category_id, 0) AS category_id FROM products " +
                      "WHERE company_id = ? AND active = 1 AND stock <= minimum_stock AND stock > 0";
 
         try (Connection conn = DBConnection.getConnection();
@@ -252,7 +271,8 @@ public class ProductDAO {
                         rs.getBoolean("active"),
                         rs.getTimestamp("created_at"),
                         rs.getTimestamp("updated_at"),
-                        rs.getInt("minimum_stock")
+                        rs.getInt("minimum_stock"),
+                        rs.getInt("category_id")
                 ));
             }
         } catch (SQLException e) {
@@ -261,14 +281,15 @@ public class ProductDAO {
         }
         return products;
     }
-    
+
     /**
      * Get out of stock products
      */
     public List<Product> getOutOfStockProducts(int companyId) {
         List<Product> products = new ArrayList<>();
         String sql = "SELECT product_id, company_id, product_name, price, stock, description, " +
-                     "active, created_at, updated_at, minimum_stock FROM products " +
+                     "active, created_at, updated_at, minimum_stock, " +
+                     "COALESCE(category_id, 0) AS category_id FROM products " +
                      "WHERE company_id = ? AND active = 1 AND stock <= 0";
 
         try (Connection conn = DBConnection.getConnection();
@@ -288,7 +309,8 @@ public class ProductDAO {
                         rs.getBoolean("active"),
                         rs.getTimestamp("created_at"),
                         rs.getTimestamp("updated_at"),
-                        rs.getInt("minimum_stock")
+                        rs.getInt("minimum_stock"),
+                        rs.getInt("category_id")
                 ));
             }
         } catch (SQLException e) {

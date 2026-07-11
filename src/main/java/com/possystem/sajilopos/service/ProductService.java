@@ -42,24 +42,22 @@ public class ProductService {
      * Add a new product
      */
     public boolean addProduct(String productName, double price, int stock, String description) {
+        return addProduct(productName, price, stock, description, 0);
+    }
+
+    /**
+     * Add a new product with category
+     */
+    public boolean addProduct(String productName, double price, int stock, String description, int categoryId) {
         int companyId = sessionManager.getCurrentCompanyId();
-        if (companyId == -1) {
-            throw new IllegalStateException("No company ID found in session");
-        }
+        if (companyId == -1) throw new IllegalStateException("No company ID found in session");
 
-        // Validation
-        if (productName == null || productName.trim().isEmpty()) {
+        if (productName == null || productName.trim().isEmpty())
             throw new IllegalArgumentException("Product name cannot be empty");
-        }
-        if (price < 0) {
-            throw new IllegalArgumentException("Price cannot be negative");
-        }
-        if (stock < 0) {
-            throw new IllegalArgumentException("Stock cannot be negative");
-        }
+        if (price < 0) throw new IllegalArgumentException("Price cannot be negative");
+        if (stock < 0) throw new IllegalArgumentException("Stock cannot be negative");
 
-        // Default minimum stock is 10
-        Product product = new Product(companyId, productName.trim(), price, stock, description, 10);
+        Product product = new Product(companyId, productName.trim(), price, stock, description, 10, categoryId);
         return productDAO.addProduct(product);
     }
 
@@ -67,24 +65,23 @@ public class ProductService {
      * Update an existing product
      */
     public boolean updateProduct(int productId, String productName, double price, int stock, String description) {
+        return updateProduct(productId, productName, price, stock, description, 0);
+    }
+
+    /**
+     * Update an existing product with category
+     */
+    public boolean updateProduct(int productId, String productName, double price, int stock, String description, int categoryId) {
         int companyId = sessionManager.getCurrentCompanyId();
-        if (companyId == -1) {
-            throw new IllegalStateException("No company ID found in session");
-        }
+        if (companyId == -1) throw new IllegalStateException("No company ID found in session");
 
-        // Validation
-        if (productName == null || productName.trim().isEmpty()) {
+        if (productName == null || productName.trim().isEmpty())
             throw new IllegalArgumentException("Product name cannot be empty");
-        }
-        if (price < 0) {
-            throw new IllegalArgumentException("Price cannot be negative");
-        }
-        if (stock < 0) {
-            throw new IllegalArgumentException("Stock cannot be negative");
-        }
+        if (price < 0) throw new IllegalArgumentException("Price cannot be negative");
+        if (stock < 0) throw new IllegalArgumentException("Stock cannot be negative");
 
-        Product product = new Product(productId, companyId, productName.trim(), price, stock, 
-                                      description, true, null, null, 10);
+        Product product = new Product(productId, companyId, productName.trim(), price, stock,
+                                      description, true, null, null, 10, categoryId);
         return productDAO.updateProduct(product);
     }
 

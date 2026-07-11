@@ -13,6 +13,7 @@ public class Product {
     private Timestamp createdAt;
     private Timestamp updatedAt;
     private int minimumStock;
+    private int categoryId;   // 0 = uncategorised
 
     // Constructor for creating new products (without ID)
     public Product(int companyId, String productName, double price, int stock, String description, int minimumStock) {
@@ -23,10 +24,17 @@ public class Product {
         this.description = description;
         this.active = true;
         this.minimumStock = minimumStock;
+        this.categoryId = 0;
+    }
+
+    // Constructor for creating new products with category
+    public Product(int companyId, String productName, double price, int stock, String description, int minimumStock, int categoryId) {
+        this(companyId, productName, price, stock, description, minimumStock);
+        this.categoryId = categoryId;
     }
 
     // Constructor for existing products (with ID)
-    public Product(int productId, int companyId, String productName, double price, int stock, 
+    public Product(int productId, int companyId, String productName, double price, int stock,
                    String description, boolean active, Timestamp createdAt, Timestamp updatedAt, int minimumStock) {
         this.productId = productId;
         this.companyId = companyId;
@@ -38,6 +46,15 @@ public class Product {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.minimumStock = minimumStock;
+        this.categoryId = 0;
+    }
+
+    // Constructor for existing products with category
+    public Product(int productId, int companyId, String productName, double price, int stock,
+                   String description, boolean active, Timestamp createdAt, Timestamp updatedAt,
+                   int minimumStock, int categoryId) {
+        this(productId, companyId, productName, price, stock, description, active, createdAt, updatedAt, minimumStock);
+        this.categoryId = categoryId;
     }
 
     // Getters
@@ -81,6 +98,10 @@ public class Product {
         return minimumStock;
     }
 
+    public int getCategoryId() {
+        return categoryId;
+    }
+
     // Setters
     public void setProductId(int productId) {
         this.productId = productId;
@@ -120,6 +141,10 @@ public class Product {
 
     public void setMinimumStock(int minimumStock) {
         this.minimumStock = minimumStock;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
     }
 
     /**

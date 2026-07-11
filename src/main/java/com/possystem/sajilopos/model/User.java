@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 /**
  * User Model
- * Represents a user in the system with company association
+ * Represents a user in the systtem with company association
  */
 public class User {
     private int userId;
