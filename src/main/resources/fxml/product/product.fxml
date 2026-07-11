@@ -78,10 +78,43 @@
                         style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold;"/>
             </HBox>
 
+            <!-- ══ MANAGE ITEM TYPES (categories) — MANAGER / ADMIN only ══ -->
+            <VBox fx:id="categoryMgmtPanel" spacing="8"
+                  style="-fx-background-color: #f8fafc; -fx-padding: 12;
+                         -fx-background-radius: 8; -fx-border-color: #e2e8f0;
+                         -fx-border-width: 1; -fx-border-radius: 8;">
+
+                <Label text="Manage Item Types"
+                       style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
+
+                <HBox spacing="6">
+                    <TextField fx:id="newCategoryField" promptText="New item type name..."
+                               HBox.hgrow="ALWAYS" prefHeight="32"
+                               style="-fx-font-size: 12px;"/>
+                    <Button text="Add" onAction="#handleAddCategory" prefHeight="32"
+                            style="-fx-background-color: #3b82f6; -fx-text-fill: white;
+                                   -fx-font-size: 12px; -fx-cursor: hand;"/>
+                </HBox>
+
+                <ListView fx:id="categoryListView" prefHeight="110"
+                          style="-fx-font-size: 12px; -fx-border-color: #e2e8f0;"/>
+
+                <HBox spacing="6">
+                    <Button text="Rename" onAction="#handleRenameCategory" prefHeight="30"
+                            HBox.hgrow="ALWAYS"
+                            style="-fx-background-color: #f59e0b; -fx-text-fill: white;
+                                   -fx-font-size: 11px; -fx-cursor: hand;"/>
+                    <Button text="Delete" onAction="#handleDeleteCategory" prefHeight="30"
+                            HBox.hgrow="ALWAYS"
+                            style="-fx-background-color: #ef4444; -fx-text-fill: white;
+                                   -fx-font-size: 11px; -fx-cursor: hand;"/>
+                </HBox>
+
+                <Label fx:id="categoryStatusLabel" style="-fx-font-size: 11px;" wrapText="true"/>
+            </VBox>
+
         </VBox>
     </left>
-
-    <!-- CENTER TABLE -->
     <center>
         <VBox style="-fx-padding: 20;" spacing="10">
             <Label text="Product List"

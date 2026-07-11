@@ -11,8 +11,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ProductController {
 
@@ -25,7 +27,13 @@ public class ProductController {
 
     // ── Search ────────────────────────────────────────────────────────────
     @FXML private TextField searchField;
-    @FXML private ComboBox<Category> filterCategoryCombo; // NEW — filter table by category
+    @FXML private ComboBox<Category> filterCategoryCombo; // filter table by category
+
+    // ── Category management panel ─────────────────────────────────────────
+    @FXML private VBox                categoryMgmtPanel;
+    @FXML private TextField           newCategoryField;
+    @FXML private ListView<Category>  categoryListView;
+    @FXML private Label               categoryStatusLabel;
 
     // ── Table ─────────────────────────────────────────────────────────────
     @FXML private TableView<Product>              productTable;
@@ -39,6 +47,8 @@ public class ProductController {
     private final ObservableList<Product>  products         = FXCollections.observableArrayList();
     private final ProductService           productService   = new ProductService();
     private final CategoryService          categoryService  = new CategoryService();
+    private final com.possystem.sajilopos.config.SessionManager session =
+            com.possystem.sajilopos.config.SessionManager.getInstance();
     private       Product                  selectedProduct  = null;
     private       List<Category>           allCategories;
 
@@ -84,6 +94,14 @@ public class ProductController {
 
         // ── Filter by category ─────────────────────────────────────────────
         filterCategoryCombo.setOnAction(e -> applyFilter());
+
+        // ── Category management panel (MANAGER/ADMIN only) ─────────────────
+        boolean canManageCategories = session.isAdmin() || session.isManager();
+        categoryMgmtPanel.setVisible(canManageCategories);
+        categoryMgmtPanel.setManaged(canManageCategories);
+        if (canManageCategories) {
+            refreshCategoryListView();
+        }
     }
 
     // ── Category helpers ──────────────────────────────────────────────────
@@ -104,9 +122,88 @@ public class ProductController {
             filterCategoryCombo.getItems().addAll(allCategories);
             filterCategoryCombo.getSelectionModel().selectFirst();
 
+            // Also refresh the management ListView
+            refreshCategoryListView();
+
         } catch (Exception e) {
             System.err.println("Could not load categories: " + e.getMessage());
         }
+    }
+
+    /** Refresh the category management ListView with current categories. */
+    private void refreshCategoryListView() {
+        if (categoryListView == null) return;
+        try {
+            allCategories = categoryService.getAllCategories();
+            categoryListView.setItems(FXCollections.observableArrayList(allCategories));
+        } catch (Exception e) {
+            System.err.println("Could not refresh category list: " + e.getMessage());
+        }
+    }
+
+    // ── Category management handlers ──────────────────────────────────────
+
+    @FXML
+    private void handleAddCategory() {
+        String name = newCategoryField.getText().trim();
+        if (name.isEmpty()) {
+            setCatStatus("Enter a name for the item type.", true);
+            return;
+        }
+        String result = categoryService.addCategory(name);
+        setCatStatus(result, result.startsWith("Failed") || result.contains("empty"));
+        if (result.contains("successfully")) {
+            newCategoryField.clear();
+            loadCategories();
+        }
+    }
+
+    @FXML
+    private void handleRenameCategory() {
+        Category selected = categoryListView.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            setCatStatus("Select an item type to rename.", true);
+            return;
+        }
+        TextInputDialog dialog = new TextInputDialog(selected.getName());
+        dialog.setTitle("Rename Item Type");
+        dialog.setHeaderText("Rename: " + selected.getName());
+        dialog.setContentText("New name:");
+        Optional<String> result = dialog.showAndWait();
+        if (result.isEmpty() || result.get().trim().isEmpty()) return;
+
+        String msg = categoryService.updateCategory(selected.getId(), result.get().trim());
+        setCatStatus(msg, msg.startsWith("Failed"));
+        if (msg.contains("successfully")) loadCategories();
+    }
+
+    @FXML
+    private void handleDeleteCategory() {
+        Category selected = categoryListView.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            setCatStatus("Select an item type to delete.", true);
+            return;
+        }
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Delete Item Type");
+        confirm.setHeaderText("Delete '" + selected.getName() + "'?");
+        confirm.setContentText("Products in this category will become uncategorised.");
+        if (confirm.showAndWait().get() != ButtonType.OK) return;
+
+        String msg = categoryService.deleteCategory(selected.getId());
+        setCatStatus(msg, msg.startsWith("Failed"));
+        if (msg.contains("successfully")) {
+            loadCategories();
+            loadProducts(); // refresh table so category column shows "—"
+        }
+    }
+
+    private void setCatStatus(String message, boolean isError) {
+        if (categoryStatusLabel == null) return;
+        categoryStatusLabel.setText(message);
+        categoryStatusLabel.setStyle(isError
+                ? "-fx-text-fill: #dc2626;"
+                : "-fx-text-fill: #16a34a;");
     }
 
     /** Returns the category name for a given id, or "—" if uncategorised. */
@@ -293,6 +390,9 @@ public class ProductController {
         loadCategories();
         searchField.clear();
         filterCategoryCombo.getSelectionModel().selectFirst();
+        if (categoryMgmtPanel != null && categoryMgmtPanel.isVisible()) {
+            refreshCategoryListView();
+        }
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────
