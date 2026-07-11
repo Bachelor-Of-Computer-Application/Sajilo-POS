@@ -130,10 +130,3 @@ public class DashboardController {
         }
     }
 }
-Category.java — add companyId field
-CategoryDAO.java — fix queries to filter by company_id
-Product.java — add categoryId field
-ProductDAO.java — include category_id in all queries
-ProductService.java — pass categoryId through
-ProductController.java — add category ComboBox
-product.fxml — add Category dropdown + Category column in table
