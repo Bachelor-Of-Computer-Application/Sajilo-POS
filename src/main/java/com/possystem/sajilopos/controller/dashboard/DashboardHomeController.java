@@ -127,7 +127,6 @@ public class DashboardHomeController {
         startAutoRefresh();
     }
 
-
     private void configureRangeToggles() {
         ToggleGroup group = new ToggleGroup();
         rangeTodayToggle.setToggleGroup(group);
@@ -275,6 +274,48 @@ public class DashboardHomeController {
             } else {
                 setText(formatCurrency(value));
             }
+        }
+    }
+
+    @FXML
+    private void goToSales() {
+        try {
+            javafx.scene.layout.BorderPane root =
+                (javafx.scene.layout.BorderPane) todayRevenueLabel.getScene().lookup("#rootPane");
+            if (root != null) {
+                root.setCenter(javafx.fxml.FXMLLoader.load(
+                    getClass().getResource("/fxml/sales/sales.fxml")));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void goToProducts() {
+        try {
+            javafx.scene.layout.BorderPane root =
+                (javafx.scene.layout.BorderPane) todayRevenueLabel.getScene().lookup("#rootPane");
+            if (root != null) {
+                root.setCenter(javafx.fxml.FXMLLoader.load(
+                    getClass().getResource("/fxml/product/product.fxml")));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void goToReports() {
+        try {
+            javafx.scene.layout.BorderPane root =
+                (javafx.scene.layout.BorderPane) todayRevenueLabel.getScene().lookup("#rootPane");
+            if (root != null) {
+                root.setCenter(javafx.fxml.FXMLLoader.load(
+                    getClass().getResource("/fxml/reports/reports.fxml")));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

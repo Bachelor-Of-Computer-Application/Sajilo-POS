@@ -17,6 +17,8 @@ public class DashboardController {
     @FXML
     private Label roleLabel;
     @FXML
+    private Label sidebarTitleLabel;
+    @FXML
     private Label companyNameLabel;
     @FXML
     private Label sidebarCompanyLabel;
@@ -57,6 +59,8 @@ public class DashboardController {
                     : "Company #" + currentUser.getCompanyId();
             companyNameLabel.setText(companyDisplay);
             sidebarCompanyLabel.setText(companyDisplay);
+            // Replace "SAJILO POS" in sidebar with logged-in username
+            sidebarTitleLabel.setText(username);
         } else {
             roleLabel.setText("Not logged in");
             companyNameLabel.setText("");
