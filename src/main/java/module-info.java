@@ -3,8 +3,12 @@ module com.possystem.sajilopos {
     requires javafx.controls;
     requires javafx.fxml;
     requires transitive javafx.graphics;
+    requires javafx.print;
     requires java.sql;
     requires jbcrypt;
+    requires com.itextpdf.kernel;
+    requires com.itextpdf.layout;
+    requires com.itextpdf.io;
 
     opens com.possystem.sajilopos to javafx.fxml;
     opens com.possystem.sajilopos.controller.auth to javafx.fxml;

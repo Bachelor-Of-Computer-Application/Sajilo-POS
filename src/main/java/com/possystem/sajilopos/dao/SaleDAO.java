@@ -11,6 +11,22 @@ import java.util.List;
 public class SaleDAO {
 
     /**
+     * Count how many sales exist today for a company — used for sequential invoice numbers
+     */
+    public int getTodaySaleCount(int companyId) {
+        String sql = "SELECT COUNT(*) FROM sales WHERE company_id = ? AND DATE(sale_date) = CURDATE()";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, companyId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) return rs.getInt(1);
+        } catch (SQLException e) {
+            System.err.println("Error counting today's sales: " + e.getMessage());
+        }
+        return 0;
+    }
+
+    /**
      * Save sale and its items to database
      */
     public int saveSale(Sale sale) {
