@@ -128,7 +128,21 @@
                         </VBox>
                     </HBox>
 
-                    <!-- Third Row - Tables and Actions -->
+                    <!-- Quick Actions -->
+                    <HBox spacing="16">
+                        <VBox spacing="10" HBox.hgrow="ALWAYS"
+                              style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 16; -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.08),8,0,0,2);">
+                            <Label text="Quick Actions" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #0f172a;"/>
+                            <HBox spacing="12">
+                                <Button text="➕  New Sale" onAction="#goToSales" prefHeight="38" HBox.hgrow="ALWAYS"
+                                        style="-fx-background-color: #2563eb; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand;"/>
+                                <Button text="📦  Add Product" onAction="#goToProducts" prefHeight="38" HBox.hgrow="ALWAYS"
+                                        style="-fx-background-color: #10b981; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand;"/>
+                                <Button text="📊  Reports" onAction="#goToReports" prefHeight="38" HBox.hgrow="ALWAYS"
+                                        style="-fx-background-color: #7c3aed; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand;"/>
+                            </HBox>
+                        </VBox>
+                    </HBox>
 
 
 

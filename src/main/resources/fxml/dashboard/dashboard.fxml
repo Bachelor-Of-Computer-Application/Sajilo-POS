@@ -23,7 +23,8 @@
 
             <children>
 
-                <Label text="SAJILO POS"
+                <Label fx:id="sidebarTitleLabel"
+                       text="SAJILO POS"
                        style="-fx-font-size:22;
                               -fx-font-weight:bold;
                               -fx-text-fill:white;"/>

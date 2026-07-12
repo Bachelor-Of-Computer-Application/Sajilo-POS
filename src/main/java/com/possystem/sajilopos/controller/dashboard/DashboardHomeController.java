@@ -127,7 +127,6 @@ public class DashboardHomeController {
         startAutoRefresh();
     }
 
-
     private void configureRangeToggles() {
         ToggleGroup group = new ToggleGroup();
         rangeTodayToggle.setToggleGroup(group);
