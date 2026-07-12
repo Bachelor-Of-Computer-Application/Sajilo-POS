@@ -165,7 +165,7 @@
 
     <!-- CENTER — loaded dynamically via DashboardController.loadView() -->
     <center>
-        <AnchorPane fx:id="centerPane" style="-fx-background-color: #f1f5f9;" />
+        <AnchorPane style="-fx-background-color: #f1f5f9;" />
     </center>
 
 </BorderPane>
