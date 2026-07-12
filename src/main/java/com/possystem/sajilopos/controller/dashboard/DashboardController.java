@@ -12,19 +12,32 @@ import javafx.scene.layout.BorderPane;
 
 public class DashboardController {
 
-    @FXML private BorderPane rootPane;
-    @FXML private Label roleLabel;
-    @FXML private Label companyNameLabel;
-    @FXML private Label sidebarCompanyLabel;
-    @FXML private Button dashboardMenu;
-    @FXML private Button customersMenu;
-    @FXML private Button purchaseHistoryMenu;
-    @FXML private Button inventoryMenu;
-    @FXML private Button purchasesMenu;
-    @FXML private Button suppliersMenu;
-    @FXML private Button reportsMenu;
-    @FXML private Button usersMenu;
-    @FXML private Button settingsMenu;
+    @FXML
+    private BorderPane rootPane;
+    @FXML
+    private Label roleLabel;
+    @FXML
+    private Label companyNameLabel;
+    @FXML
+    private Label sidebarCompanyLabel;
+    @FXML
+    private Button dashboardMenu;
+    @FXML
+    private Button customersMenu;
+    @FXML
+    private Button purchaseHistoryMenu;
+    @FXML
+    private Button inventoryMenu;
+    @FXML
+    private Button purchasesMenu;
+    @FXML
+    private Button suppliersMenu;
+    @FXML
+    private Button reportsMenu;
+    @FXML
+    private Button usersMenu;
+    @FXML
+    private Button settingsMenu;
 
     private final CompanyDAO companyDAO = new CompanyDAO();
 
@@ -35,13 +48,13 @@ public class DashboardController {
 
         if (currentUser != null) {
             String username = currentUser.getUsername() != null ? currentUser.getUsername() : "Unknown";
-            String role     = currentUser.getRole()     != null ? currentUser.getRole()     : "CASHIER";
+            String role = currentUser.getRole() != null ? currentUser.getRole() : "CASHIER";
             roleLabel.setText("User: " + username + " | Role: " + role);
 
             // Fetch real company name from DB instead of showing raw ID
             Company company = companyDAO.getCompanyById(currentUser.getCompanyId());
             String companyDisplay = (company != null) ? company.getCompanyName()
-                                                      : "Company #" + currentUser.getCompanyId();
+                    : "Company #" + currentUser.getCompanyId();
             companyNameLabel.setText(companyDisplay);
             sidebarCompanyLabel.setText(companyDisplay);
         } else {
@@ -100,17 +113,60 @@ public class DashboardController {
 
     // ── Navigation ──────────────────────────────────────────────────────────
 
-    @FXML private void openDashboard()       { loadView("/fxml/dashboard/dashboard-home.fxml"); }
-    @FXML private void openProducts()        { loadView("/fxml/product/product.fxml"); }
-    @FXML private void openCustomers()       { loadView("/fxml/customers/customers.fxml"); }
-    @FXML private void openSuppliers()       { loadView("/fxml/suppliers/suppliers.fxml"); }
-    @FXML private void openReports()         { loadView("/fxml/reports/reports.fxml"); }
-    @FXML private void openSales()           { loadView("/fxml/sales/sales.fxml"); }
-    @FXML private void openInventory()       { loadView("/fxml/inventory/inventory.fxml"); }
-    @FXML private void openPurchases()       { loadView("/fxml/purchases/purchases.fxml"); }
-    @FXML private void openPurchaseHistory() { loadView("/fxml/purchases/purchaseHistory.fxml"); }
-    @FXML private void openSettings()        { loadView("/fxml/settings/settings.fxml"); }
-    @FXML private void openUsers()           { loadView("/fxml/users/users.fxml"); }
+    @FXML
+    private void openDashboard() {
+        loadView("/fxml/dashboard/dashboard-home.fxml");
+    }
+
+    @FXML
+    private void openProducts() {
+        loadView("/fxml/product/product.fxml");
+    }
+
+    @FXML
+    private void openCustomers() {
+        loadView("/fxml/customers/customers.fxml");
+    }
+
+    @FXML
+    private void openSuppliers() {
+        loadView("/fxml/suppliers/suppliers.fxml");
+    }
+
+    @FXML
+    private void openReports() {
+        loadView("/fxml/reports/reports.fxml");
+    }
+
+    @FXML
+    private void openSales() {
+        loadView("/fxml/sales/sales.fxml");
+    }
+
+    @FXML
+    private void openInventory() {
+        loadView("/fxml/inventory/inventory.fxml");
+    }
+
+    @FXML
+    private void openPurchases() {
+        loadView("/fxml/purchases/purchases.fxml");
+    }
+
+    @FXML
+    private void openPurchaseHistory() {
+        loadView("/fxml/purchases/purchaseHistory.fxml");
+    }
+
+    @FXML
+    private void openSettings() {
+        loadView("/fxml/settings/settings.fxml");
+    }
+
+    @FXML
+    private void openUsers() {
+        loadView("/fxml/users/users.fxml");
+    }
 
     @FXML
     private void handleLogout() {
@@ -130,4 +186,3 @@ public class DashboardController {
         }
     }
 }
-

@@ -6,7 +6,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.possystem.sajilopos.controller.inventory.inventorycontroller"
+            fx:controller="com.possystem.sajilopos.controller.inventory.InventoryController"
             prefWidth="1200" prefHeight="800"
             style="-fx-background-color: #f1f5f9;">
 
