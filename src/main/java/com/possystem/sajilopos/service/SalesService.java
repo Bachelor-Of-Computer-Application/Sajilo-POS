@@ -10,6 +10,8 @@ import com.possystem.sajilopos.model.Product;
 import com.possystem.sajilopos.model.Customer;
 import com.possystem.sajilopos.model.User;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class SalesService {
@@ -271,7 +273,10 @@ public class SalesService {
      * Generate unique invoice number
      */
     private String generateInvoiceNumber() {
-        return "INV-" + System.currentTimeMillis();
+        int companyId = sessionManager.getCurrentCompanyId();
+        int todayCount = saleDAO.getTodaySaleCount(companyId);
+        String datePart = LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE);
+        return "INV-" + datePart + "-" + String.format("%03d", todayCount + 1);
     }
 
     /**

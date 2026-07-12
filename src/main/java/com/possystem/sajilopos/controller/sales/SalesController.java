@@ -4,6 +4,7 @@ import com.possystem.sajilopos.model.Sale;
 import com.possystem.sajilopos.model.SaleItem;
 import com.possystem.sajilopos.model.Product;
 import com.possystem.sajilopos.model.Customer;
+import com.possystem.sajilopos.service.InvoiceService;
 import com.possystem.sajilopos.service.SalesService;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -11,8 +12,13 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -416,6 +422,10 @@ public class SalesController {
             int saleId = salesService.saveSale(currentSale);
 
             if (saleId > 0) {
+                Customer selectedCustomer = customerCombo.getSelectionModel().getSelectedItem();
+                InvoiceService invoiceService = new InvoiceService();
+                invoiceService.generateInvoicePdf(currentSale, selectedCustomer, 0);
+                showInvoicePreview(currentSale, selectedCustomer);
                 showInfo("Sale completed successfully!\n\nInvoice: " + currentSale.getInvoiceNo() +
                         "\nChange: Rs. " + String.format("%.2f", currentSale.getChangeAmount()));
                 handleClear();
@@ -428,6 +438,27 @@ public class SalesController {
             System.err.println("Exception during sale completion: " + e.getMessage());
             e.printStackTrace();
             showError("Error completing sale: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Show invoice preview for a completed sale.
+     */
+    private void showInvoicePreview(Sale sale, Customer customer) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/sales/invoice.fxml"));
+            Parent root = loader.load();
+
+            InvoiceController controller = loader.getController();
+            Stage stage = new Stage();
+            stage.setTitle("Invoice - " + sale.getInvoiceNo());
+            stage.setScene(new Scene(root));
+            controller.setStage(stage);
+            controller.populate(sale, customer, 0);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showError("Unable to open invoice preview: " + e.getMessage());
         }
     }
 
